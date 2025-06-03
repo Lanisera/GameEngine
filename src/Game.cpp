@@ -13,6 +13,7 @@ Game::~Game() {
 
 void Game::Initialize() {
     isRunning = true;
+    frameDelay = 1000000000 / FPS;
     
     if (!SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO)) {
         std::cout << "Error initializing SDL: " << SDL_GetError() << std::endl;
@@ -57,8 +58,14 @@ void Game::ProcessInput() {
 }
 
 void Game::Update() {
-
+    /// SDL3 使用ns稳定帧率
+    Uint64 timeToWait = frameDelay - (SDL_GetTicksNS() - nsPreviousFrame);
+    if (timeToWait > 0 && timeToWait <= frameDelay) {
+        SDL_DelayNS(timeToWait);
+    }
+    nsPreviousFrame = SDL_GetTicksNS();
 }
+
 
 void Game::Render() {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
