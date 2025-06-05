@@ -1,4 +1,5 @@
 #include "ECS.h"
+#include "../Logger/Logger.h"
 
 int IComponent::nextId = 0;
 
@@ -30,7 +31,11 @@ Entity Registry::CreateEntity() {
     Entity newEntity = Entity{entityId};
     entityToBeCreate.insert(newEntity);
 
-    // TODO: 记录日志
+    if (entityId >= entityComponentSignatures.size()) {
+        entityComponentSignatures.resize(entityId + 1);
+    }
+
+    Logger::Info("Create Entity Id" + std::to_string(entityId));
 
     return newEntity;
 }

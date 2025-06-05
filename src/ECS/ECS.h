@@ -21,9 +21,15 @@ public:
     bool operator>(const Entity& other) const { return this->id > other.id; }
     bool operator<(const Entity& other) const { return this->id < other.id; }
 
+    template<typename TComponent, typename ...TArgs> void AddComponent(TArgs&& ...args);
+    template<typename TComponent> void RemoveComponent();
+    template<typename TComponent> bool HasComponent() const;
+    template<typename TComponent> TComponent& GetComponent() const;
     
 private:
     int id;
+
+    class Registry* registry;
 };
 
 struct IComponent {
@@ -102,6 +108,7 @@ public:
     template<typename TComponent, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
     template<typename TComponent> void RemoveComponent(Entity entity);
     template<typename TComponent> bool HasComponent(Entity entity) const; 
+    template<typename TComponent> TComponent& GetComponent(Entity entity) const;
 
     template<typename TSystem, typename ...TArgs> void AddSystem(TArgs&& ...args);
     template<typename TSystem> void RemoveSystem();
@@ -121,6 +128,26 @@ private:
     std::set<Entity> entityToBeRemove;
 
 };
+
+template<typename TComponent, typename ...TArgs> 
+void Entity::AddComponent(TArgs&& ...args) {
+    registry->AddComponent<TComponent>(*this, std::forward<TArgs>(args)...);
+}
+
+template<typename TComponent> 
+void Entity::RemoveComponent() {
+    registry->RemoveComponent<TComponent>(*this);
+}
+
+template<typename TComponent> 
+bool Entity::HasComponent() const {
+    return registry->HasComponent<TComponent>(*this);
+}
+
+template<typename TComponent> 
+TComponent& Entity::GetComponent() const {
+    return registry->GetComponent<TComponent>(*this);
+}
 
 template<typename TComponent>
 void System::RequireComponent() {
@@ -165,6 +192,14 @@ bool Registry::HasComponent(Entity entity) const {
     const int componentId = Component<TComponent>::GetId();
 
     return entityComponentSignatures[entityId].test(componentId);
+}
+
+template<typename TComponent> 
+TComponent& Registry::GetComponent(Entity entity) const {
+    const int entityId = entity.GetId();
+    const int componentId = Component<TComponent>::GetId();
+
+    return std::static_pointer_cast<Pool<TComponent>>(componentPools[componentId])->Get(entityId);
 }
 
 template<typename TSystem, typename ...TArgs>

@@ -13,7 +13,8 @@ find_package(SDL3_ttf REQUIRED)
 # 添加可执行文件
 add_executable(sdl_test 
                 src/main.cpp
-                src/Game.cpp
+                src/Game/Game.cpp
+                src/ECS/ECS.cpp
                 )
 
 # 链接所有库
