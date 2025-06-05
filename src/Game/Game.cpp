@@ -1,14 +1,15 @@
 #include "Game.h"
+#include "../ECS/ECS.h"
+
+#include "../Component/TransformComponent.h"
 
 #include <iostream>
 #include <SDL3/SDL.h>
 
 Game::Game() {
-    std::cout << "contor " << std::endl;
 }
 
 Game::~Game() {
-    std::cout << "end" << std::endl;
 }
 
 void Game::Initialize() {
@@ -30,14 +31,23 @@ void Game::Initialize() {
     if (renderer == NULL) {
         std::cout << "Error creating renderer: " << SDL_GetError() << std::endl;
     }
+
+    registry = std::make_unique<Registry>();
 }
 
 void Game::Run() {
+    Setup();
     while (isRunning) {
         ProcessInput();
         Update();
         Render();
     }
+}
+
+void Game::Setup() {
+    Entity tank = registry->CreateEntity();
+    tank.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
+    tank.RemoveComponent<TransformComponent>();
 }
 
 void Game::ProcessInput() {

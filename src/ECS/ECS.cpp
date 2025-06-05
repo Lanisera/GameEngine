@@ -29,13 +29,14 @@ Entity Registry::CreateEntity() {
     int entityId = numEntities++;
     
     Entity newEntity = Entity{entityId};
+    newEntity.registry = this;
     entityToBeCreate.insert(newEntity);
 
     if (entityId >= entityComponentSignatures.size()) {
         entityComponentSignatures.resize(entityId + 1);
     }
 
-    Logger::Info("Create Entity Id" + std::to_string(entityId));
+    Logger::Info("Create Entity Id " + std::to_string(entityId));
 
     return newEntity;
 }

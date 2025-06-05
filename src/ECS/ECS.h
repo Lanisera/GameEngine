@@ -8,10 +8,13 @@
 #include <algorithm>
 #include <unordered_map>
 
+#include "../Logger/Logger.h"
+
 const unsigned int MAX_COMPONENTS = 32;
 using Signature = std::bitset<MAX_COMPONENTS>;
 
 class Entity {
+    friend class Registry;
 public:
     Entity(int id) : id(id) {}
     int GetId() const;
@@ -38,7 +41,7 @@ protected:
 };
 
 template<typename T>
-class Component : public IComponent {
+struct Component : public IComponent {
 public:
     static int GetId() {
         static auto id = nextId++;
@@ -170,12 +173,14 @@ void Registry::AddComponent(Entity entity, TArgs&& ...args) {
 
     auto componentPool = std::static_pointer_cast<Pool<TComponent>>(componentPools[componentId]);
     if (entityId >= componentPool->GetSize()) {
-        componentPool.Resize(numEntities);
+        componentPool->Resize(numEntities);
     }
 
-    TComponent newComponent{std::forward<TArgs>(args)...};
+    TComponent newComponent(std::forward<TArgs>(args)...);
     componentPool->Set(entityId, newComponent);
     entityComponentSignatures[entityId].set(componentId);
+
+    Logger::Info("Add Component Id " + std::to_string(componentId) + " to Entity Id " + std::to_string(entityId));
 }
 
 template<typename TComponent>
@@ -184,6 +189,8 @@ void Registry::RemoveComponent(Entity entity) {
     const int componentId = Component<TComponent>::GetId();
 
     entityComponentSignatures[entityId].set(componentId, false);
+
+    Logger::Info("Remove Component Id " + std::to_string(componentId) + " to Entity Id " + std::to_string(entityId));
 }
 
 template<typename TComponent>
