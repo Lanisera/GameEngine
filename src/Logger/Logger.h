@@ -42,16 +42,16 @@ private:
         switch (level)
         {
             case Level::Info:
-                std::cout << GREEN << cur_time << "[INFO] " << RESET << std::endl;
+                std::cout << GREEN << cur_time << "[INFO] " << message << RESET << std::endl;
                 break;
             case Level::Debug:
-                std::cout << BLUE << cur_time << "[DEBUG] " << RESET << std::endl;
+                std::cout << BLUE << cur_time << "[DEBUG] " << message << RESET << std::endl;
                 break;
             case Level::Error:
-                std::cout << RED << cur_time << "[ERROR] " << RESET << std::endl;
+                std::cout << RED << cur_time << "[ERROR] " << message << RESET << std::endl;
                 break;
             case Level::Warning:
-                std::cout << YELLOW << cur_time << "[WARNING] " << RESET << std::endl;
+                std::cout << YELLOW << cur_time << "[WARNING] " << message << RESET << std::endl;
                 break;
         
             default:
