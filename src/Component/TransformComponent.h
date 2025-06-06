@@ -1,5 +1,8 @@
-#include "../ECS/ECS.h"
+#pragma once
+
 #include <glm/glm.hpp>
+
+#include "../ECS/ECS.h"
 
 struct TransformComponent 
     : public Component<TransformComponent>

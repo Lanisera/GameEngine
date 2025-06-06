@@ -1,6 +1,8 @@
 #include "Game.h"
 #include "../ECS/ECS.h"
 
+#include "../System/MovementSystem.h"
+
 #include "../Component/TransformComponent.h"
 
 #include <iostream>
@@ -45,6 +47,8 @@ void Game::Run() {
 }
 
 void Game::Setup() {
+    registry->AddSystem<MovementSystem>();
+
     Entity tank = registry->CreateEntity();
     tank.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
     tank.RemoveComponent<TransformComponent>();

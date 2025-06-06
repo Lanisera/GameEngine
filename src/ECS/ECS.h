@@ -118,6 +118,10 @@ public:
     template<typename TSystem> bool HasSystem() const;
     template<typename TSystem> TSystem& GetSystem() const;
 
+    void AddEntityToSystems(Entity entity);
+
+    void Update();
+
 private:
     int numEntities{0};
 
