@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "../ECS/ECS.h"
 
+#include "../System/RenderSystem.h"
 #include "../System/MovementSystem.h"
 
 #include "../Component/TransformComponent.h"
@@ -48,10 +49,12 @@ void Game::Run() {
 
 void Game::Setup() {
     registry->AddSystem<MovementSystem>();
+    registry->AddSystem<RenderSystem>();
 
     Entity tank = registry->CreateEntity();
     tank.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
     tank.AddComponent<RigidbodyComponent>(glm::vec2(10.0, 10.0));
+    tank.AddComponent<SpriteComponent>(20.0, 20.0);
     // tank.RemoveComponent<TransformComponent>();
 }
 
@@ -92,6 +95,9 @@ void Game::Update() {
 void Game::Render() {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer);
+
+    registry->GetSystem<RenderSystem>().Update(renderer);
+
     SDL_RenderPresent(renderer);
 }
 

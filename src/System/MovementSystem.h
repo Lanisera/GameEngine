@@ -7,14 +7,12 @@
 class MovementSystem : public System
 {
 public:
-    MovementSystem()
-    {
+    MovementSystem() {
         RequireComponent<TransformComponent>();
         RequireComponent<RigidbodyComponent>();
     }
 
-    void Update(double deltaTime)
-    {
+    void Update(double deltaTime) {
         for (auto entity : GetSystemEntities()) {
             auto& transformComponent = entity.GetComponent<TransformComponent>();
             const auto& rigidbodyComponent = entity.GetComponent<RigidbodyComponent>();
