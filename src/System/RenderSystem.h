@@ -14,20 +14,27 @@ public:
         RequireComponent<TransformComponent>();
     }
 
-    void Update(SDL_Renderer* renderer ) {
+    void Update(SDL_Renderer* renderer, std::unique_ptr<AssetStore>& assetStore) {
         for (auto entity : GetSystemEntities()) {
             const auto& spriteComponent = entity.GetComponent<SpriteComponent>();
             const auto& transformComponent = entity.GetComponent<TransformComponent>();
 
-            SDL_FRect rect = {
+            SDL_FRect dstRect = {
                 transformComponent.position.x,
                 transformComponent.position.y,
-                spriteComponent.width,
-                spriteComponent.height
+                spriteComponent.width * transformComponent.scale.x,
+                spriteComponent.height * transformComponent.scale.y
             };
 
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-            SDL_RenderFillRect(renderer, &rect);
+            SDL_RenderTextureRotated(
+                renderer, 
+                assetStore->GetTexture(spriteComponent.imageId), 
+                &spriteComponent.rect,
+                &dstRect,
+                transformComponent.rotation, 
+                NULL,
+                SDL_FLIP_NONE
+            );
 
         }
     }

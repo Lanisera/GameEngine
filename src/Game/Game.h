@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "../ECS/ECS.h"
+#include "../AssetStore/AssetStore.h"
 
 class Game {
 public:
@@ -25,4 +26,5 @@ private:
     SDL_Window *window;
     SDL_Renderer *renderer;
     std::unique_ptr<Registry> registry;
+    std::unique_ptr<AssetStore> assetStore;
 };

@@ -36,6 +36,7 @@ void Game::Initialize() {
     }
 
     registry = std::make_unique<Registry>();
+    assetStore = std::make_unique<AssetStore>();
 }
 
 void Game::Run() {
@@ -54,7 +55,7 @@ void Game::Setup() {
     Entity tank = registry->CreateEntity();
     tank.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
     tank.AddComponent<RigidbodyComponent>(glm::vec2(10.0, 10.0));
-    tank.AddComponent<SpriteComponent>(20.0, 20.0);
+    tank.AddComponent<SpriteComponent>(32.0, 32.0, );
     // tank.RemoveComponent<TransformComponent>();
 }
 
@@ -96,7 +97,7 @@ void Game::Render() {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer);
 
-    registry->GetSystem<RenderSystem>().Update(renderer);
+    registry->GetSystem<RenderSystem>().Update(renderer, assetStore);
 
     SDL_RenderPresent(renderer);
 }

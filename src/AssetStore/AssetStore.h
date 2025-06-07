@@ -1,0 +1,21 @@
+#pragma once
+
+#include <map>
+#include <string>
+
+#include <SDL3/SDL.h>
+
+class AssetStore
+{
+public:
+    AssetStore();
+    ~AssetStore();
+
+    void AddTexture(const std::string& assetId, const std::string& filePath);
+    SDL_Texture* GetTexture(const std::string& assetId);
+
+    ClearAssets();
+
+private:
+    std::map<std::string, SDL_Texture*> imageAssets;
+}
