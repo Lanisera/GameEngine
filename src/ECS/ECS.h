@@ -234,5 +234,5 @@ bool Registry::HasSystem() const {
 
 template<typename TSystem>
 TSystem& Registry::GetSystem() const {
-    return *std::static_pointer_cast<TSystem>(systems.find(std::type_index(typeid(TSystem))));
+    return *std::static_pointer_cast<TSystem>(systems.find(std::type_index(typeid(TSystem)))->second);
 }

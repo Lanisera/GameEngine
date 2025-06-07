@@ -58,4 +58,5 @@ void Registry::Update() {
     for (auto entity : entityToBeCreate) {
         AddEntityToSystems(entity);
     }
+    entityToBeCreate.clear();
 }

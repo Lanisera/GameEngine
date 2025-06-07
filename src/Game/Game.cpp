@@ -51,7 +51,8 @@ void Game::Setup() {
 
     Entity tank = registry->CreateEntity();
     tank.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
-    tank.RemoveComponent<TransformComponent>();
+    tank.AddComponent<RigidbodyComponent>(glm::vec2(10.0, 10.0));
+    // tank.RemoveComponent<TransformComponent>();
 }
 
 void Game::ProcessInput() {
@@ -77,7 +78,14 @@ void Game::Update() {
     if (timeToWait > 0 && timeToWait <= frameDelay) {
         SDL_DelayNS(timeToWait);
     }
+
+    double deltaTime = (SDL_GetTicksNS() - nsPreviousFrame) / 1000000000.0;
+    // std::cout << deltaTime << std::endl;
+
     nsPreviousFrame = SDL_GetTicksNS();
+
+    registry->GetSystem<MovementSystem>().Update(deltaTime);
+    registry->Update();
 }
 
 
