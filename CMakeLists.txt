@@ -15,6 +15,7 @@ add_executable(sdl_test
                 src/main.cpp
                 src/Game/Game.cpp
                 src/ECS/ECS.cpp
+                src/AssetStore/AssetStore.cpp
                 )
 
 # 链接所有库

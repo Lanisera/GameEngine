@@ -16,6 +16,10 @@ AssetStore::~AssetStore() {
 void AssetStore::AddTexture(SDL_Renderer* renderer, const std::string& assetId, const std::string& filePath) {
     SDL_Texture* texture = IMG_LoadTexture(renderer, filePath.c_str());
 
+    if (texture == NULL) {
+        Logger::Error("Dont load image");
+    }
+
     imageAssets.emplace(assetId, texture);
 }
 
@@ -25,7 +29,7 @@ SDL_Texture* AssetStore::GetTexture(const std::string& assetId) {
 
 void AssetStore::ClearAssets() {
     for (auto image : imageAssets) {
-        SDL_DestroyTexture(image->second);
+        SDL_DestroyTexture(image.second);
     }
     imageAssets.clear();
 }

@@ -52,10 +52,12 @@ void Game::Setup() {
     registry->AddSystem<MovementSystem>();
     registry->AddSystem<RenderSystem>();
 
+    assetStore->AddTexture(renderer, "image-tank", "../assets/images/tank-panther-right.png");
+
     Entity tank = registry->CreateEntity();
     tank.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
     tank.AddComponent<RigidbodyComponent>(glm::vec2(10.0, 10.0));
-    tank.AddComponent<SpriteComponent>(32.0, 32.0, );
+    tank.AddComponent<SpriteComponent>(32.0, 32.0, "image-tank");
     // tank.RemoveComponent<TransformComponent>();
 }
 
