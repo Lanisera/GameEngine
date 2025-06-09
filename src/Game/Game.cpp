@@ -50,6 +50,16 @@ void Game::Run() {
 }
 
 void Game::LoadLevel(int level) {
+    registry->AddSystem<MovementSystem>();
+    registry->AddSystem<RenderSystem>();
+
+    assetStore->AddTexture(renderer, "image-tank", "../assets/images/tank-panther-right.png");
+
+    Entity tank = registry->CreateEntity();
+    tank.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
+    tank.AddComponent<RigidbodyComponent>(glm::vec2(10.0, 10.0));
+    tank.AddComponent<SpriteComponent>(32.0, 32.0, "image-tank", 1);
+
     int tilemapRow = 20;
     int tilemapCol = 25;
     float tileSize = 32.0;
@@ -74,21 +84,11 @@ void Game::LoadLevel(int level) {
             // std::cout << indexY << " " << indexX << std::endl;
 
             tile.AddComponent<TransformComponent>(glm::vec2(x * tileSize * tileScale, y * tileSize * tileScale), glm::vec2(tileScale, tileScale));
-            tile.AddComponent<SpriteComponent>(tileSize, tileSize, "image-jungle", indexX * tileSize, indexY * tileSize);
+            tile.AddComponent<SpriteComponent>(tileSize, tileSize, "image-jungle", 0, indexX * tileSize, indexY * tileSize);
         }
     }
     
     tilemapFile.close();
-
-    registry->AddSystem<MovementSystem>();
-    registry->AddSystem<RenderSystem>();
-
-    assetStore->AddTexture(renderer, "image-tank", "../assets/images/tank-panther-right.png");
-
-    Entity tank = registry->CreateEntity();
-    tank.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
-    tank.AddComponent<RigidbodyComponent>(glm::vec2(10.0, 10.0));
-    tank.AddComponent<SpriteComponent>(32.0, 32.0, "image-tank");
 
 }
 

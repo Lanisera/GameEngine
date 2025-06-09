@@ -9,11 +9,12 @@ struct SpriteComponent
 {
     float width;
     float height;
+    int zIndex;
     std::string imageId;
     SDL_FRect srcRect;
 
-    SpriteComponent(float width = 0, float height = 0, std::string imageId = "", float srcRectX = 0, float srcRectY = 0)
-        : width(width), height(height), imageId(imageId)
+    SpriteComponent(float width = 0, float height = 0, std::string imageId = "", int zIndex = 0, float srcRectX = 0, float srcRectY = 0)
+        : width(width), height(height), imageId(imageId), zIndex(zIndex)
     {
         srcRect = {
             srcRectX, srcRectY,
