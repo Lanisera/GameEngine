@@ -29,7 +29,7 @@ public:
             SDL_RenderTextureRotated(
                 renderer, 
                 assetStore->GetTexture(spriteComponent.imageId), 
-                &spriteComponent.rect,
+                &spriteComponent.srcRect,
                 &dstRect,
                 transformComponent.rotation, 
                 NULL,
