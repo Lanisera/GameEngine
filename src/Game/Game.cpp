@@ -3,6 +3,7 @@
 
 #include "../System/RenderSystem.h"
 #include "../System/MovementSystem.h"
+#include "../System/AnimationSystem.h"
 
 #include "../Component/TransformComponent.h"
 
@@ -52,20 +53,16 @@ void Game::Run() {
 void Game::LoadLevel(int level) {
     registry->AddSystem<MovementSystem>();
     registry->AddSystem<RenderSystem>();
+    registry->AddSystem<AnimationSystem>();
 
     assetStore->AddTexture(renderer, "image-tank", "../assets/images/tank-panther-right.png");
-
-    Entity tank = registry->CreateEntity();
-    tank.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
-    tank.AddComponent<RigidbodyComponent>(glm::vec2(10.0, 10.0));
-    tank.AddComponent<SpriteComponent>(32.0, 32.0, "image-tank", 1);
+    assetStore->AddTexture(renderer, "image-chopper", "../assets/images/chopper.png");
+    assetStore->AddTexture(renderer, "image-jungle", "../assets/tilemaps/jungle.png");
 
     int tilemapRow = 20;
     int tilemapCol = 25;
     float tileSize = 32.0;
     float tileScale = 2.0;
-
-    assetStore->AddTexture(renderer, "image-jungle", "../assets/tilemaps/jungle.png");
 
     std::fstream tilemapFile;
     tilemapFile.open("../assets/tilemaps/jungle.map");
@@ -87,6 +84,16 @@ void Game::LoadLevel(int level) {
     }
     
     tilemapFile.close();
+
+    Entity tank = registry->CreateEntity();
+    tank.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
+    tank.AddComponent<RigidbodyComponent>(glm::vec2(10.0, 10.0));
+    tank.AddComponent<SpriteComponent>(32.0, 32.0, "image-tank", 1);
+
+    Entity chopper = registry->CreateEntity();
+    chopper.AddComponent<TransformComponent>(glm::vec2(100, 100), glm::vec2(1.0, 1.0));
+    chopper.AddComponent<SpriteComponent>(32.0, 32.0, "image-chopper", 1);
+    chopper.AddComponent<AnimationComponent>(2, 5);
 
 }
 
@@ -124,6 +131,7 @@ void Game::Update() {
     nsPreviousFrame = SDL_GetTicksNS();
 
     registry->GetSystem<MovementSystem>().Update(deltaTime);
+    registry->GetSystem<AnimationSystem>().Update();
     registry->Update();
 }
 
