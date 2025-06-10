@@ -23,6 +23,7 @@ private:
     Uint64 frameDelay = 0;
     Uint64 nsPreviousFrame = 0;
 
+    bool isDebug;
     bool isRunning;
     SDL_Window *window;
     SDL_Renderer *renderer;

@@ -5,6 +5,7 @@
 #include "../System/MovementSystem.h"
 #include "../System/CollisionSystem.h"
 #include "../System/AnimationSystem.h"
+#include "../System/RenderColliderSystem.h"
 
 #include "../Component/TransformComponent.h"
 
@@ -19,6 +20,7 @@ Game::~Game() {
 }
 
 void Game::Initialize() {
+    isDebug = false;
     isRunning = true;
     frameDelay = 1000000000 / FPS;
     
@@ -56,6 +58,7 @@ void Game::LoadLevel(int level) {
     registry->AddSystem<MovementSystem>();
     registry->AddSystem<AnimationSystem>();
     registry->AddSystem<CollisionSystem>();
+    registry->AddSystem<RenderColliderSystem>();
 
     assetStore->AddTexture(renderer, "image-tank", "../assets/images/tank-panther-right.png");
     assetStore->AddTexture(renderer, "image-chopper", "../assets/images/chopper.png");
@@ -120,6 +123,8 @@ void Game::ProcessInput() {
             case SDL_EVENT_KEY_DOWN:
                 if (sdlEvent.key.key == SDLK_ESCAPE)
                     isRunning = false;
+                if (sdlEvent.key.key == SDLK_D)
+                    isDebug = !isDebug;
                 break;
             default:
                 break;
@@ -151,6 +156,9 @@ void Game::Render() {
     SDL_RenderClear(renderer);
 
     registry->GetSystem<RenderSystem>().Update(renderer, assetStore);
+    if (isDebug) {
+        registry->GetSystem<RenderColliderSystem>().Update(renderer);
+    }
 
     SDL_RenderPresent(renderer);
 }
