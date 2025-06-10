@@ -1,6 +1,7 @@
 #pragma once
 
 #include <set>
+#include <deque>
 #include <vector>
 #include <bitset>
 #include <memory>
@@ -18,6 +19,7 @@ class Entity {
 public:
     Entity(int id) : id(id) {}
     int GetId() const;
+    void Kill() const;
 
     bool operator==(const Entity& other) const { return this->id == other.id; }
     bool operator!=(const Entity& other) const { return this->id != other.id; }
@@ -107,6 +109,7 @@ public:
     Registry() = default;
 
     Entity CreateEntity();
+    void KillEntity(Entity entity);
 
     template<typename TComponent, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
     template<typename TComponent> void RemoveComponent(Entity entity);
@@ -119,11 +122,14 @@ public:
     template<typename TSystem> TSystem& GetSystem() const;
 
     void AddEntityToSystems(Entity entity);
+    void RemoveEntityFromSystems(Entity entity);
 
     void Update();
 
 private:
     int numEntities{0};
+
+    std::deque<int> freeIds;
 
     std::vector<std::shared_ptr<IPool>> componentPools;
 

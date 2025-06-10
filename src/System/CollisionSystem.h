@@ -42,6 +42,8 @@ public:
 
                 if (isCollision) {
                     Logger::Info(std::to_string(a.GetId()) + " to " + std::to_string(b.GetId()));
+                    a.Kill();
+                    b.Kill();
                 }
             }
         }
