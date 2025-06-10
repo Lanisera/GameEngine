@@ -5,7 +5,6 @@
 #include "../ECS/ECS.h"
 
 struct RigidbodyComponent 
-    : public Component<RigidbodyComponent>
 {
     glm::vec2 velocity;
 

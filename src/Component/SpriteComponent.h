@@ -5,7 +5,6 @@
 #include "../ECS/ECS.h"
 
 struct SpriteComponent
-    : public Component<SpriteComponent>
 {
     float width;
     float height;

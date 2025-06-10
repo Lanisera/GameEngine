@@ -5,7 +5,6 @@
 #include "../ECS/ECS.h"
 
 struct TransformComponent 
-    : public Component<TransformComponent>
 {
     glm::vec2 position;
     glm::vec2 scale;

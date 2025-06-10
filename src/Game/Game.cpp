@@ -81,8 +81,6 @@ void Game::LoadLevel(int level) {
             int indexX = ch - '0';
             tilemapFile.ignore();
 
-            // std::cout << indexY << " " << indexX << std::endl;
-
             tile.AddComponent<TransformComponent>(glm::vec2(x * tileSize * tileScale, y * tileSize * tileScale), glm::vec2(tileScale, tileScale));
             tile.AddComponent<SpriteComponent>(tileSize, tileSize, "image-jungle", 0, indexX * tileSize, indexY * tileSize);
         }
