@@ -16,11 +16,11 @@ public:
         RequireComponent<BoxColliderComponent>();
     }
 
-    void SubscribeEvent(std::unique_ptr<EventBus>& eventBus) {
-        eventBus->SubscribeEvent<CollisionEvent>(this, &DamageSystem::Collision);
+    void SubscribeEvents(std::unique_ptr<EventBus>& eventBus) {
+        eventBus->SubscribeEvent<CollisionEvent>(this, &DamageSystem::OnCollision);
     }
      
-    void Collision(CollisionEvent& event) {
+    void OnCollision(CollisionEvent& event) {
         Logger::Info("Collision happened !!!");
         event.a.Kill();
         event.b.Kill();

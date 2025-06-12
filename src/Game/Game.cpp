@@ -7,6 +7,9 @@
 #include "../System/CollisionSystem.h"
 #include "../System/AnimationSystem.h"
 #include "../System/RenderColliderSystem.h"
+#include "../System/KeyboardControlSystem.h"
+
+#include "../Event/KeyPressedEvent.h"
 
 #include "../Component/TransformComponent.h"
 
@@ -62,6 +65,7 @@ void Game::LoadLevel(int level) {
     registry->AddSystem<AnimationSystem>();
     registry->AddSystem<CollisionSystem>();
     registry->AddSystem<RenderColliderSystem>();
+    registry->AddSystem<KeyboardControlSystem>();
 
     assetStore->AddTexture(renderer, "image-tank", "../assets/images/tank-panther-right.png");
     assetStore->AddTexture(renderer, "image-chopper", "../assets/images/chopper.png");
@@ -128,6 +132,7 @@ void Game::ProcessInput() {
                     isRunning = false;
                 if (sdlEvent.key.key == SDLK_D)
                     isDebug = !isDebug;
+                eventBus->EmitEvent<KeyPressedEvent>(sdlEvent.key.key);
                 break;
             default:
                 break;
@@ -148,7 +153,8 @@ void Game::Update() {
     nsPreviousFrame = SDL_GetTicksNS();
 
     eventBus->Reset();
-    registry->GetSystem<DamageSystem>().SubscribeEvent(eventBus);
+    registry->GetSystem<DamageSystem>().SubscribeEvents(eventBus);
+    registry->GetSystem<KeyboardControlSystem>().SubscribeEvents(eventBus);
 
     registry->Update();
 
