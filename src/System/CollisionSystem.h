@@ -44,7 +44,6 @@ public:
                 );
 
                 if (isCollision) {
-                    Logger::Debug("Get Into");
                     eventBus->EmitEvent<CollisionEvent>(a, b);
                 }
             }

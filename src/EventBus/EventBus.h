@@ -26,7 +26,7 @@ class EventCallback : public IEventCallback {
 private:
     using CallBackFunction = void(TOwner::*)(TEvent&);
 public:
-    EventCallback(TOwner* ownerInstance, CallBackFunction callbackFunction)
+    EventCallback(TOwner* ownerInstance, CallBackFunction callBackFunction)
         : ownerInstance(ownerInstance), callBackFunction(callBackFunction)
     {
 
@@ -36,15 +36,6 @@ public:
 
 private:
     virtual void Call(Event& e) override {
-        if (callBackFunction == nullptr) {
-            Logger::Error("callBackFunction not found");
-        }
-
-        if (ownerInstance == nullptr) {
-            Logger::Error("ownerInstance not found");
-            return ;
-        }
-
         std::invoke(callBackFunction, ownerInstance, static_cast<TEvent&>(e));
     }
 
@@ -62,25 +53,21 @@ public:
 
     template<typename TEvent, typename TOwner>
     void SubscribeEvent(TOwner* ownerInstance, void(TOwner::*callbackFunction)(TEvent&)) {
-        auto eventType = std::type_index(typeid(TEvent));
-        if(!subscribers[eventType].get()) {
-            subscribers[eventType] = std::make_unique<HandlerList>();
+        if(!subscribers[typeid(TEvent)].get()) {
+            subscribers[typeid(TEvent)] = std::make_unique<HandlerList>();
         }
         auto subscriber = std::make_unique<EventCallback<TOwner, TEvent>>(ownerInstance, callbackFunction);
-        subscribers[eventType]->push_back(std::move(subscriber));
+        subscribers[typeid(TEvent)]->push_back(std::move(subscriber));
     }
 
     template<typename TEvent, typename ...TArgs>
     void EmitEvent(TArgs&& ...args) {
-        auto& handlers = subscribers[std::type_index(typeid(TEvent))];
+        auto& handlers = subscribers[typeid(TEvent)];
         if (handlers) {
             for (auto it = handlers->begin(); it != handlers->end(); it ++) {
                 auto handler = it->get();
                 TEvent event(std::forward<TArgs>(args)...);
-                Logger::Debug("Before Execute");
-                if (handler != nullptr)
-                    handler->Execute(event);
-                Logger::Debug("After Execute");
+                handler->Execute(event);
             }
         }
     }
