@@ -3,6 +3,9 @@
 #include "../Logger/Logger.h"
 
 #include "../ECS/ECS.h"
+#include "../EventBus/EventBus.h"
+
+#include "../Event/CollisionEvent.h"
 
 #include "../Component/TransformComponent.h"
 #include "../Component/BoxColliderComponent.h"
@@ -15,7 +18,7 @@ public:
         RequireComponent<BoxColliderComponent>();
     }
 
-    void Update() {
+    void Update(std::unique_ptr<EventBus>& eventBus) {
         const auto& entities = GetSystemEntities();
         for (auto i = entities.begin(); i != entities.end(); i++) {
             Entity a = *i;
@@ -41,9 +44,8 @@ public:
                 );
 
                 if (isCollision) {
-                    Logger::Info(std::to_string(a.GetId()) + " to " + std::to_string(b.GetId()));
-                    a.Kill();
-                    b.Kill();
+                    Logger::Debug("Get Into");
+                    eventBus->EmitEvent<CollisionEvent>(a, b);
                 }
             }
         }

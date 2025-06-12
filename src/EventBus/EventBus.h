@@ -1,10 +1,14 @@
 #pragma once
 
+#include <map>
 #include <list>
 #include <memory>
 #include <typeindex>
+#include <functional>
 
 #include "../EventBus/Event.h"
+
+#include "../Logger/Logger.h"
 
 class IEventCallback {
 public:
@@ -32,6 +36,15 @@ public:
 
 private:
     virtual void Call(Event& e) override {
+        if (callBackFunction == nullptr) {
+            Logger::Error("callBackFunction not found");
+        }
+
+        if (ownerInstance == nullptr) {
+            Logger::Error("ownerInstance not found");
+            return ;
+        }
+
         std::invoke(callBackFunction, ownerInstance, static_cast<TEvent&>(e));
     }
 
@@ -43,6 +56,10 @@ using HandlerList = std::list<std::unique_ptr<IEventCallback>>;
 
 class EventBus {
 public:
+    void Reset() {
+        subscribers.clear();
+    }
+
     template<typename TEvent, typename TOwner>
     void SubscribeEvent(TOwner* ownerInstance, void(TOwner::*callbackFunction)(TEvent&)) {
         auto eventType = std::type_index(typeid(TEvent));
@@ -53,14 +70,17 @@ public:
         subscribers[eventType]->push_back(std::move(subscriber));
     }
 
-    template<typename TEvent, typename ..TArgs>
-    void EmitEvent(TArgs&& ..args) {
-        auto handlers = subscribers[std::type_index(typeid(TEvent))];
+    template<typename TEvent, typename ...TArgs>
+    void EmitEvent(TArgs&& ...args) {
+        auto& handlers = subscribers[std::type_index(typeid(TEvent))];
         if (handlers) {
-            for (auto it = handler->begin(); it != handler->end(); it ++) {
+            for (auto it = handlers->begin(); it != handlers->end(); it ++) {
                 auto handler = it->get();
-                TEvent event(std::forward<TArgs>(args)..);
-                handler->Execute(event);
+                TEvent event(std::forward<TArgs>(args)...);
+                Logger::Debug("Before Execute");
+                if (handler != nullptr)
+                    handler->Execute(event);
+                Logger::Debug("After Execute");
             }
         }
     }

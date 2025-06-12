@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "../ECS/ECS.h"
 
+#include "../System/DamageSystem.h"
 #include "../System/RenderSystem.h"
 #include "../System/MovementSystem.h"
 #include "../System/CollisionSystem.h"
@@ -41,6 +42,7 @@ void Game::Initialize() {
     }
 
     registry = std::make_unique<Registry>();
+    eventBus = std::make_unique<EventBus>();
     assetStore = std::make_unique<AssetStore>();
 }
 
@@ -55,6 +57,7 @@ void Game::Run() {
 
 void Game::LoadLevel(int level) {
     registry->AddSystem<RenderSystem>();
+    registry->AddSystem<DamageSystem>();
     registry->AddSystem<MovementSystem>();
     registry->AddSystem<AnimationSystem>();
     registry->AddSystem<CollisionSystem>();
@@ -144,10 +147,14 @@ void Game::Update() {
 
     nsPreviousFrame = SDL_GetTicksNS();
 
+    eventBus->Reset();
+    registry->GetSystem<DamageSystem>().SubscribeEvent(eventBus);
+
+    registry->Update();
+
     registry->GetSystem<MovementSystem>().Update(deltaTime);
     registry->GetSystem<AnimationSystem>().Update();
-    registry->GetSystem<CollisionSystem>().Update();
-    registry->Update();
+    registry->GetSystem<CollisionSystem>().Update(eventBus);
 }
 
 
