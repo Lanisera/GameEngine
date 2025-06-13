@@ -68,7 +68,7 @@ void Game::LoadLevel(int level) {
     registry->AddSystem<KeyboardControlSystem>();
 
     assetStore->AddTexture(renderer, "image-tank", "../assets/images/tank-panther-right.png");
-    assetStore->AddTexture(renderer, "image-chopper", "../assets/images/chopper.png");
+    assetStore->AddTexture(renderer, "image-chopper", "../assets/images/chopper-spritesheet.png");
     assetStore->AddTexture(renderer, "image-jungle", "../assets/tilemaps/jungle.png");
 
     int tilemapRow = 20;
@@ -113,6 +113,8 @@ void Game::LoadLevel(int level) {
     chopper.AddComponent<TransformComponent>(glm::vec2(100, 100), glm::vec2(1.0, 1.0));
     chopper.AddComponent<SpriteComponent>(32.0, 32.0, "image-chopper", 1);
     chopper.AddComponent<AnimationComponent>(2, 5);
+    chopper.AddComponent<RigidbodyComponent>(glm::vec2(0));
+    chopper.AddComponent<KeyboardControlledComponent>(glm::vec2(0.0, -30.0), glm::vec2(30.0, 0.0), glm::vec2(0.0, 30.0), glm::vec2(-30.0, 0.0));
 
 }
 

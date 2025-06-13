@@ -8,11 +8,16 @@
 
 #include "../EventBus/EventBus.h"
 
+#include "../Component/SpriteComponent.h"
+#include "../Component/RigidbodyComponent.h"
+#include "../Component/KeyboardControlledComponent.h"
+
 class KeyboardControlSystem : public System
 {
 public:
     KeyboardControlSystem() {
-
+        RequireComponent<SpriteComponent>();
+        RequireComponent<KeyboardControlledComponent>();
     }
 
     void SubscribeEvents(std::unique_ptr<EventBus>& eventBus) {
@@ -20,9 +25,36 @@ public:
     }
 
     void OnKeyPressed(KeyPressedEvent& event) {
-        std::string keycode = std::to_string(event.keySymbol);
-        std::string keySymbol = std::string(1, event.keySymbol);
+        for (auto entity : GetSystemEntities()) {
+            const auto& keyboardControlledComponent = entity.GetComponent<KeyboardControlledComponent>();
+            auto& spriteComponent = entity.GetComponent<SpriteComponent>();
+            auto& rigidbodyComponent = entity.GetComponent<RigidbodyComponent>();
 
-        Logger::Info("Pressed Key " + keycode + ": " + keySymbol);
+            switch (event.keySymbol)
+            {
+            case SDLK_UP:
+                rigidbodyComponent.velocity = keyboardControlledComponent.upVelocity;
+                spriteComponent.srcRect.y = spriteComponent.height * 0;
+                break;
+            case SDLK_RIGHT:
+                rigidbodyComponent.velocity = keyboardControlledComponent.rightVelocity;
+                spriteComponent.srcRect.y = spriteComponent.height * 1;
+                break;
+            case SDLK_DOWN:
+                rigidbodyComponent.velocity = keyboardControlledComponent.downVelocity;
+                spriteComponent.srcRect.y = spriteComponent.height * 2;
+                break;
+            case SDLK_LEFT:
+                rigidbodyComponent.velocity = keyboardControlledComponent.leftVelocity;
+                spriteComponent.srcRect.y = spriteComponent.height * 3;
+                break;
+            default:
+                break;
+            }
+        }
+    }
+
+    void Update() {
+
     }
 };
