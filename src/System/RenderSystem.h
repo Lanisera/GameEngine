@@ -16,7 +16,7 @@ public:
         RequireComponent<TransformComponent>();
     }
 
-    void Update(SDL_Renderer* renderer, std::unique_ptr<AssetStore>& assetStore) {
+    void Update(SDL_Renderer* renderer, std::unique_ptr<AssetStore>& assetStore, const SDL_FRect& camera) {
         struct renderableEnity {
             SpriteComponent spriteComponent;
             TransformComponent transformComponent;
@@ -35,9 +35,18 @@ public:
             const auto& spriteComponent = entity.spriteComponent;
             const auto& transformComponent = entity.transformComponent;
 
+            bool isOutsideCameraView = (
+                    entity.transformComponent.position.x + (entity.transformComponent.scale.x * entity.spriteComponent.width) < camera.x ||
+                    entity.transformComponent.position.x > camera.x + camera.w ||
+                    entity.transformComponent.position.y + (entity.transformComponent.scale.y * entity.spriteComponent.height) < camera.y ||
+                    entity.transformComponent.position.y > camera.y + camera.h
+                );
+            
+            if (isOutsideCameraView) continue;
+
             SDL_FRect dstRect = {
-                transformComponent.position.x,
-                transformComponent.position.y,
+                transformComponent.position.x - camera.x,
+                transformComponent.position.y - camera.y,
                 spriteComponent.width * transformComponent.scale.x,
                 spriteComponent.height * transformComponent.scale.y
             };

@@ -7,6 +7,7 @@
 #include "../System/CollisionSystem.h"
 #include "../System/AnimationSystem.h"
 #include "../System/RenderColliderSystem.h"
+#include "../System/CameraMovementSystem.h"
 #include "../System/KeyboardControlSystem.h"
 
 #include "../Event/KeyPressedEvent.h"
@@ -16,6 +17,11 @@
 #include <fstream>
 #include <iostream>
 #include <SDL3/SDL.h>
+
+int Game::windowWidth = 0;
+int Game::windowHeight = 0;
+int Game::mapWidth = 0;
+int Game::mapHeight = 0;
 
 Game::Game() {
 }
@@ -27,13 +33,19 @@ void Game::Initialize() {
     isDebug = false;
     isRunning = true;
     frameDelay = 1000000000 / FPS;
+
+    windowWidth = 1080;
+    windowHeight = 720;
+
+    cameraRect.w = static_cast<float>(windowWidth);
+    cameraRect.h = static_cast<float>(windowHeight);
     
     if (!SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO)) {
         std::cout << "Error initializing SDL: " << SDL_GetError() << std::endl;
         return;
     }
 
-    window = SDL_CreateWindow("GameEngine", 1080, 720, SDL_WINDOW_RESIZABLE);
+    window = SDL_CreateWindow("GameEngine", windowWidth, windowHeight, SDL_WINDOW_RESIZABLE);
     if (window == NULL) {
         std::cout << "Error creating window: " << SDL_GetError() << std::endl;
         return;
@@ -64,6 +76,7 @@ void Game::LoadLevel(int level) {
     registry->AddSystem<MovementSystem>();
     registry->AddSystem<AnimationSystem>();
     registry->AddSystem<CollisionSystem>();
+    registry->AddSystem<CameraMovementSystem>();
     registry->AddSystem<RenderColliderSystem>();
     registry->AddSystem<KeyboardControlSystem>();
 
@@ -75,6 +88,9 @@ void Game::LoadLevel(int level) {
     int tilemapCol = 25;
     float tileSize = 32.0;
     float tileScale = 2.0;
+
+    mapWidth = static_cast<int>(tilemapCol * tileSize * tileScale);
+    mapHeight = static_cast<int>(tilemapRow * tileSize * tileScale);
 
     std::fstream tilemapFile;
     tilemapFile.open("../assets/tilemaps/jungle.map");
@@ -114,7 +130,8 @@ void Game::LoadLevel(int level) {
     chopper.AddComponent<SpriteComponent>(32.0, 32.0, "image-chopper", 1);
     chopper.AddComponent<AnimationComponent>(2, 5);
     chopper.AddComponent<RigidbodyComponent>(glm::vec2(0));
-    chopper.AddComponent<KeyboardControlledComponent>(glm::vec2(0.0, -30.0), glm::vec2(30.0, 0.0), glm::vec2(0.0, 30.0), glm::vec2(-30.0, 0.0));
+    chopper.AddComponent<KeyboardControlledComponent>(glm::vec2(0.0, -100.0), glm::vec2(100.0, 0.0), glm::vec2(0.0, 100.0), glm::vec2(-100.0, 0.0));
+    chopper.AddComponent<CameraFollowComponent>();
 
 }
 
@@ -163,6 +180,7 @@ void Game::Update() {
     registry->GetSystem<MovementSystem>().Update(deltaTime);
     registry->GetSystem<AnimationSystem>().Update();
     registry->GetSystem<CollisionSystem>().Update(eventBus);
+    registry->GetSystem<CameraMovementSystem>().Update(cameraRect);
 }
 
 
@@ -170,9 +188,9 @@ void Game::Render() {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer);
 
-    registry->GetSystem<RenderSystem>().Update(renderer, assetStore);
+    registry->GetSystem<RenderSystem>().Update(renderer, assetStore, cameraRect);
     if (isDebug) {
-        registry->GetSystem<RenderColliderSystem>().Update(renderer);
+        registry->GetSystem<RenderColliderSystem>().Update(renderer, cameraRect);
     }
 
     SDL_RenderPresent(renderer);

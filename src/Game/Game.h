@@ -18,6 +18,11 @@ public:
     void Update();
     void Render();
     void Destory();
+
+    static int windowWidth;
+    static int windowHeight;
+    static int mapWidth;
+    static int mapHeight;
 private:
 
     Uint64 FPS = 60;
@@ -27,6 +32,7 @@ private:
     bool isDebug;
     bool isRunning;
     SDL_Window *window;
+    SDL_FRect cameraRect;
     SDL_Renderer *renderer;
     std::unique_ptr<Registry> registry;
     std::unique_ptr<EventBus> eventBus;
