@@ -145,7 +145,6 @@ void Game::LoadLevel(int level) {
 
 void Game::Setup() {
     LoadLevel(0);
-    Logger::Debug("Load Finished");
 }
 
 void Game::ProcessInput() {

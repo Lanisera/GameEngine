@@ -17,7 +17,6 @@ public:
 
             if (SDL_GetTicksNS() - projectileComponent.startTime > projectileComponent.duration) {
                 registry->KillEntity(entity);
-                Logger::Info("Remove Entity");
             }
         }
     }

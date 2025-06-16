@@ -200,7 +200,7 @@ void Registry::RemoveComponent(Entity entity) {
 
     entityComponentSignatures[entityId].set(componentId, false);
 
-    Logger::Info("Remove Component Id " + std::to_string(componentId) + " to Entity Id " + std::to_string(entityId));
+    // Logger::Info("Remove Component Id " + std::to_string(componentId) + " to Entity Id " + std::to_string(entityId));
 }
 
 template<typename TComponent>
