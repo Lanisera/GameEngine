@@ -5,12 +5,14 @@
 #include "../Component/SpriteComponent.h"
 #include "../Component/TransformComponent.h"
 #include "../Component/RigidbodyComponent.h"
+#include "../Component/ProjectileComponent.h"
 #include "../Component/BoxColliderComponent.h"
 #include "../Component/ProjectileEmitterComponent.h"
 
-class ProjectileEmitterSystem : public System
+class ProjectileEmitSystem : public System
 {
-    ProjectileEmitterSystem() {
+public:
+    ProjectileEmitSystem() {
         RequireComponent<TransformComponent>();
         RequireComponent<ProjectileEmitterComponent>();
     }
@@ -30,10 +32,11 @@ class ProjectileEmitterSystem : public System
                 }
                 
                 Entity newEntity = registry->CreateEntity();
-                newEntity.AddComponent<SpriteComponent>("image-bullet", 4, 4);
+                newEntity.AddComponent<SpriteComponent>(4, 4, "image-bullet", 4);
                 newEntity.AddComponent<TransformComponent>(projectilePosition);
-                newEntity.AddComponent<RigidbodyComponent>(glm::vec2(100.0, 0.0));
+                newEntity.AddComponent<RigidbodyComponent>(projectileEmitterComponent.projectileVelocity);
                 newEntity.AddComponent<BoxColliderComponent>(4.0, 4.0);
+                newEntity.AddComponent<ProjectileComponent>(projectileEmitterComponent.projectileDuration, projectileEmitterComponent.projectileDamage, projectileEmitterComponent.isFriendly);
 
                 projectileEmitterComponent.lastEmissionTime = SDL_GetTicksNS();
             }

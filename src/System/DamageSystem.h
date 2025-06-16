@@ -22,7 +22,7 @@ public:
      
     void OnCollision(CollisionEvent& event) {
         Logger::Info("Collision happened !!!");
-        event.a.Kill();
-        event.b.Kill();
+        // event.a.Kill();
+        // event.b.Kill();
     }
 };
