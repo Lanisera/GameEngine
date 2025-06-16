@@ -140,12 +140,12 @@ void Game::LoadLevel(int level) {
     chopper.AddComponent<RigidbodyComponent>(glm::vec2(0));
     chopper.AddComponent<KeyboardControlledComponent>(glm::vec2(0.0, -100.0), glm::vec2(100.0, 0.0), glm::vec2(0.0, 100.0), glm::vec2(-100.0, 0.0));
     chopper.AddComponent<CameraFollowComponent>();
+    chopper.AddComponent<ProjectileEmitterComponent>(glm::vec2(150.0, 150.0), 0, Game::ns * 5, 10, true);
 
 }
 
 void Game::Setup() {
     LoadLevel(0);
-    Logger::Debug("Load Finished");
 }
 
 void Game::ProcessInput() {
@@ -183,6 +183,7 @@ void Game::Update() {
     eventBus->Reset();
     registry->GetSystem<DamageSystem>().SubscribeEvents(eventBus);
     registry->GetSystem<KeyboardControlSystem>().SubscribeEvents(eventBus);
+    registry->GetSystem<ProjectileEmitSystem>().SubscribeEvents(eventBus);
 
     registry->Update();
 

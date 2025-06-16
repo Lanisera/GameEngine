@@ -47,7 +47,7 @@ Entity Registry::CreateEntity() {
     newEntity.registry = this;
     entityToBeCreate.insert(newEntity);
 
-    Logger::Debug("Create Entity Id " + std::to_string(entityId));
+    // Logger::Debug("Create Entity Id " + std::to_string(entityId));
 
     return newEntity;
 }
@@ -88,4 +88,5 @@ void Registry::Update() {
         entityComponentSignatures[entityId].reset();
         freeIds.push_back(entityId);
     }
+    entityToBeRemove.clear();
 }
