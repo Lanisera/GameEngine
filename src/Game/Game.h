@@ -23,6 +23,7 @@ public:
     static int windowHeight;
     static int mapWidth;
     static int mapHeight;
+    static const Uint64 ns = 1000000000;
 private:
 
     Uint64 FPS = 60;
