@@ -7,6 +7,8 @@
 
 #include "../Event/CollisionEvent.h"
 
+#include "../Component/HealthComponent.h"
+#include "../Component/ProjectileComponent.h"
 #include "../Component/BoxColliderComponent.h"
 
 class DamageSystem : public System
@@ -21,8 +23,34 @@ public:
     }
      
     void OnCollision(CollisionEvent& event) {
-        // Logger::Info("Collision happened !!!");
-        // event.a.Kill();
-        // event.b.Kill();
+        Entity a = event.a;
+        Entity b = event.b;
+
+        if (a.BelongToGroup("bullet") && b.HasTag("Player")) {
+            OnProjectileHitPlayer(a, b);
+        }
+        if (b.BelongToGroup("bullet") && a.HasTag("Player")) {
+            OnProjectileHitPlayer(b, a);
+        }
+        if (a.BelongToGroup("bullet") && b.BelongToGroup("enemy")) {
+
+        }
+        if (b.BelongToGroup("bullet") && a.BelongToGroup("enemy")) {
+
+        }
+    }
+
+    void OnProjectileHitPlayer(Entity bullet, Entity player) {
+        const auto& projectile = bullet.GetComponent<ProjectileComponent>();
+        auto& health = player.GetComponent<HealthComponent>();
+
+        if (!projectile.isFriendly) {
+            health.healthPercentage -= projectile.damage;
+        }
+
+        if (health.healthPercentage <= 0)
+            player.Kill();
+        
+        bullet.Kill();
     }
 };

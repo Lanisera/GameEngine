@@ -111,7 +111,8 @@ void Game::LoadLevel(int level) {
             tilemapFile.get(ch);
             int indexX = ch - '0';
             tilemapFile.ignore();
-
+            
+            tile.Group("tile");
             tile.AddComponent<TransformComponent>(glm::vec2(x * tileSize * tileScale, y * tileSize * tileScale), glm::vec2(tileScale, tileScale));
             tile.AddComponent<SpriteComponent>(tileSize, tileSize, "image-jungle", 0, indexX * tileSize, indexY * tileSize);
         }
@@ -120,6 +121,7 @@ void Game::LoadLevel(int level) {
     tilemapFile.close();
 
     Entity tank = registry->CreateEntity();
+    tank.Group("Enemy");
     tank.AddComponent<TransformComponent>(glm::vec2(0, 50.0), glm::vec2(1.0, 1.0), 0.0);
     tank.AddComponent<RigidbodyComponent>(glm::vec2(0.0, 0.0));
     tank.AddComponent<SpriteComponent>(32.0, 32.0, "image-tank", 1);
@@ -127,6 +129,7 @@ void Game::LoadLevel(int level) {
     tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(100.0, 0.0), Game::ns * 2, Game::ns * 5, 10, false);
 
     Entity tank2 = registry->CreateEntity();
+    tank2.Group("Enemy");
     tank2.AddComponent<TransformComponent>(glm::vec2(100.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
     tank2.AddComponent<RigidbodyComponent>(glm::vec2(0.0, 0.0));
     tank2.AddComponent<SpriteComponent>(32.0, 32.0, "image-tank", 1);
@@ -134,8 +137,10 @@ void Game::LoadLevel(int level) {
     tank2.AddComponent<ProjectileEmitterComponent>(glm::vec2(0.0, 100.0), Game::ns * 2, Game::ns * 5, 10, false);
 
     Entity chopper = registry->CreateEntity();
+    chopper.Tag("Player");
     chopper.AddComponent<TransformComponent>(glm::vec2(100, 100), glm::vec2(1.0, 1.0));
     chopper.AddComponent<SpriteComponent>(32.0, 32.0, "image-chopper", 1);
+    chopper.AddComponent<BoxColliderComponent>(32.0, 32.0);
     chopper.AddComponent<AnimationComponent>(2, 5);
     chopper.AddComponent<RigidbodyComponent>(glm::vec2(0));
     chopper.AddComponent<KeyboardControlledComponent>(glm::vec2(0.0, -100.0), glm::vec2(100.0, 0.0), glm::vec2(0.0, 100.0), glm::vec2(-100.0, 0.0));
