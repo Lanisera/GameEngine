@@ -31,10 +31,10 @@ public:
     template<typename TComponent> bool HasComponent() const;
     template<typename TComponent> TComponent& GetComponent() const;
     
+    class Registry* registry;
+
 private:
     int id;
-
-    class Registry* registry;
 };
 
 struct IComponent {
