@@ -126,7 +126,7 @@ bool Registry::EntityBelongToGroup(Entity entity, const std::string& group) cons
         return false;
     
     const auto& entities = entitiesPerGroup.find(group)->second;
-    return entities.find(entity) == entities.end();
+    return entities.find(entity) != entities.end();
 }
 
 std::vector<Entity> Registry::GetEntitiesByGroup(const std::string& group) {
@@ -155,6 +155,8 @@ void Registry::Update() {
 
     for (auto entity : entityToBeRemove) {
         RemoveEntityFromSystems(entity);
+        RemoveEntityGroup(entity);
+        RemoveEntityTag(entity);
         
         const int entityId = entity.GetId();
         entityComponentSignatures[entityId].reset();

@@ -99,13 +99,28 @@ public:
     void Add(T object) { data.push_back(object); }
 
     // TODO: 错误检查
-    T& Get(int index) { return static_cast<T&>(data[index]); }
+    T& Get(int index) { 
+        if (index < 0 || index >= data.size()) {
+            throw std::out_of_range("Pool index " + std::to_string(index) + " is out of range (size: " + std::to_string(data.size()) + ")");
+        }
+        return static_cast<T&>(data[index]); 
+    }
 
     // TODO: 错误检查
-    void Set(int index, T object) { data[index] = object; }
+    void Set(int index, T object) { 
+        if (index < 0 || index >= data.size()) {
+            throw std::out_of_range("Pool index " + std::to_string(index) + " is out of range (size: " + std::to_string(data.size()) + ")");
+        }
+        data[index] = object; 
+    }
 
     // TODO: 错误检查
-    T& operator[](int index) { return data[index]; }
+    T& operator[](int index) { 
+        if (index < 0 || index >= data.size()) {
+            throw std::out_of_range("Pool index " + std::to_string(index) + " is out of range (size: " + std::to_string(data.size()) + ")");
+        }
+        return data[index]; 
+    }
 private: 
     std::vector<T> data;
 };
@@ -205,7 +220,7 @@ void Registry::AddComponent(Entity entity, TArgs&& ...args) {
 
     auto componentPool = std::static_pointer_cast<Pool<TComponent>>(componentPools[componentId]);
     if (entityId >= componentPool->GetSize()) {
-        componentPool->Resize(numEntities);
+        componentPool->Resize(std::max(entityId + 1, numEntities));
     }
 
     TComponent newComponent(std::forward<TArgs>(args)...);
@@ -220,6 +235,11 @@ void Registry::RemoveComponent(Entity entity) {
     const int entityId = entity.GetId();
     const int componentId = Component<TComponent>::GetId();
 
+    // 检查 entityId 是否在有效范围内
+    if (entityId >= entityComponentSignatures.size()) {
+        throw std::runtime_error("Entity ID " + std::to_string(entityId) + " is out of range for entity component signatures (size: " + std::to_string(entityComponentSignatures.size()) + ")");
+    }
+
     entityComponentSignatures[entityId].set(componentId, false);
 
     // Logger::Info("Remove Component Id " + std::to_string(componentId) + " to Entity Id " + std::to_string(entityId));
@@ -230,6 +250,21 @@ bool Registry::HasComponent(Entity entity) const {
     const int entityId = entity.GetId();
     const int componentId = Component<TComponent>::GetId();
 
+    // 检查 componentPools 是否越界
+    if (componentId >= componentPools.size()) {
+        return false;
+    }
+
+    // 检查 componentPool 是否存在
+    if (!componentPools[componentId]) {
+        return false;
+    }
+
+    // 检查 entityId 是否在有效范围内
+    if (entityId >= entityComponentSignatures.size()) {
+        return false;
+    }
+
     return entityComponentSignatures[entityId].test(componentId);
 }
 
@@ -238,7 +273,24 @@ TComponent& Registry::GetComponent(Entity entity) const {
     const int entityId = entity.GetId();
     const int componentId = Component<TComponent>::GetId();
 
-    return std::static_pointer_cast<Pool<TComponent>>(componentPools[componentId])->Get(entityId);
+    // 检查 componentPools 是否越界
+    if (componentId >= componentPools.size()) {
+        throw std::runtime_error("Component pool not found for component ID: " + std::to_string(componentId));
+    }
+
+    // 检查 componentPool 是否存在
+    if (!componentPools[componentId]) {
+        throw std::runtime_error("Component pool is null for component ID: " + std::to_string(componentId));
+    }
+
+    auto componentPool = std::static_pointer_cast<Pool<TComponent>>(componentPools[componentId]);
+    
+    // 检查 entityId 是否在 Pool 的有效范围内
+    if (entityId >= componentPool->GetSize()) {
+        throw std::runtime_error("Entity ID " + std::to_string(entityId) + " is out of range for component pool (size: " + std::to_string(componentPool->GetSize()) + ")");
+    }
+
+    return componentPool->Get(entityId);
 }
 
 template<typename TSystem, typename ...TArgs>

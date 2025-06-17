@@ -127,6 +127,7 @@ void Game::LoadLevel(int level) {
     tank.AddComponent<SpriteComponent>(32.0, 32.0, "image-tank", 1);
     tank.AddComponent<BoxColliderComponent>(32.0, 32.0);
     tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(100.0, 0.0), Game::ns * 2, Game::ns * 5, 10, false);
+    tank.AddComponent<HealthComponent>(50);
 
     Entity tank2 = registry->CreateEntity();
     tank2.Group("Enemy");
@@ -135,6 +136,7 @@ void Game::LoadLevel(int level) {
     tank2.AddComponent<SpriteComponent>(32.0, 32.0, "image-tank", 1);
     tank2.AddComponent<BoxColliderComponent>(32.0, 32.0);
     tank2.AddComponent<ProjectileEmitterComponent>(glm::vec2(0.0, 100.0), Game::ns * 2, Game::ns * 5, 10, false);
+    tank2.AddComponent<HealthComponent>(50);
 
     Entity chopper = registry->CreateEntity();
     chopper.Tag("Player");
@@ -146,6 +148,7 @@ void Game::LoadLevel(int level) {
     chopper.AddComponent<KeyboardControlledComponent>(glm::vec2(0.0, -100.0), glm::vec2(100.0, 0.0), glm::vec2(0.0, 100.0), glm::vec2(-100.0, 0.0));
     chopper.AddComponent<CameraFollowComponent>();
     chopper.AddComponent<ProjectileEmitterComponent>(glm::vec2(150.0, 150.0), 0, Game::ns * 5, 10, true);
+    chopper.AddComponent<HealthComponent>(100);
 
 }
 
