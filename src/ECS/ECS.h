@@ -77,6 +77,7 @@ private:
 class IPool {
 protected:
     virtual ~IPool() = default;
+    virtual void RemoveEntityFromPool(int entityId) = 0;
 };
 
 template<typename T>
@@ -107,11 +108,48 @@ public:
     }
 
     // TODO: 错误检查
-    void Set(int index, T object) { 
-        if (index < 0 || index >= data.size()) {
-            throw std::out_of_range("Pool index " + std::to_string(index) + " is out of range (size: " + std::to_string(data.size()) + ")");
+    void Set(int entityId, T object) { 
+        if (entityIdToIndex.find(entityId) != entityIdToIndex.end()) {
+            int index = entityIdToIndex[entityId];
+            data[index] = object;
         }
-        data[index] = object; 
+        else {
+            int index = size;
+            indexToEntityId.emplace(index, entityId);
+            entityIdToIndex.emplace(entityId, index);
+
+            if (index >= size) {
+                Resize(size * 2);
+            }
+
+            data[index] = object;
+
+            size++;
+        }
+    }
+
+    void Remove(int entityId) {
+        int lastIndex = size - 1;
+        int lastEntityId = indexToEntityId[lastIndex];
+        int willDelectIndex = entityIdToIndex[entityId];
+
+        // 组件迁移
+        data[willDelectIndex] = data[lastIndex];
+
+        // 更新组件状态表
+        entityIdToIndex[lastEntityId] = willDelectIndex;
+        indexToEntityId[willDelectIndex] = lastIndex;
+
+        indexToEntityId.erase(lastIndex);
+        entityIdToIndex.erase(entityId);
+    
+        size--;
+    }
+
+    void RemoveEntityFromPool(int entityId) override {
+        if (entityIdToIndex.find(entityId) != entityIdToIndex.end()) {
+            Remove(entityId);
+        }
     }
 
     // TODO: 错误检查
@@ -123,6 +161,10 @@ public:
     }
 private: 
     std::vector<T> data;
+    int size = 0;
+
+    std::unordered_map<int, int> indexToEntityId;
+    std::unordered_map<int, int> entityIdToIndex;
 };
 
 class Registry {
@@ -219,9 +261,6 @@ void Registry::AddComponent(Entity entity, TArgs&& ...args) {
     }
 
     auto componentPool = std::static_pointer_cast<Pool<TComponent>>(componentPools[componentId]);
-    if (entityId >= componentPool->GetSize()) {
-        componentPool->Resize(std::max(entityId + 1, numEntities));
-    }
 
     TComponent newComponent(std::forward<TArgs>(args)...);
     componentPool->Set(entityId, newComponent);
@@ -239,6 +278,9 @@ void Registry::RemoveComponent(Entity entity) {
     if (entityId >= entityComponentSignatures.size()) {
         throw std::runtime_error("Entity ID " + std::to_string(entityId) + " is out of range for entity component signatures (size: " + std::to_string(entityComponentSignatures.size()) + ")");
     }
+
+    auto componentPool = std::static_pointer_cast<Pool<TComponent>>(componentPools[componentId]);
+    componentPool->Remove(entityId);
 
     entityComponentSignatures[entityId].set(componentId, false);
 
