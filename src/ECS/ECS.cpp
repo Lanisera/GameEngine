@@ -161,6 +161,10 @@ void Registry::Update() {
         const int entityId = entity.GetId();
         entityComponentSignatures[entityId].reset();
         freeIds.push_back(entityId);
+
+        for (auto& pool : componentPools) {
+            pool->RemoveEntityFromPool(entityId);
+        }
     }
     entityToBeRemove.clear();
 }

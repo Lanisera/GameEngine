@@ -75,7 +75,7 @@ private:
 };
 
 class IPool {
-protected:
+public:
     virtual ~IPool() = default;
     virtual void RemoveEntityFromPool(int entityId) = 0;
 };
@@ -83,27 +83,27 @@ protected:
 template<typename T>
 class Pool : public IPool {
 public:
-    Pool(int size = 100) {
-        Resize(size);
+    Pool(int capcity = 100) {
+        size = 0;
+        data.resize(capcity);
     }
     
     virtual ~Pool() = default;
 
-    void Resize(int size) { data.resize(size); }
+    bool isEmpty() const { return size == 0; }
 
-    bool isEmpty() const { return data.empty(); }
+    int GetSize() const { return size; }
 
-    int GetSize() const { return data.size(); }
-
-    void Clear() { data.clear(); }
-
-    void Add(T object) { data.push_back(object); }
+    void Clear() { 
+        indexToEntityId.clear();
+        entityIdToIndex.clear();
+        data.clear();
+        size = 0;
+    }
 
     // TODO: 错误检查
-    T& Get(int index) { 
-        if (index < 0 || index >= data.size()) {
-            throw std::out_of_range("Pool index " + std::to_string(index) + " is out of range (size: " + std::to_string(data.size()) + ")");
-        }
+    T& Get(int entityId) { 
+        int index = entityIdToIndex[entityId];
         return static_cast<T&>(data[index]); 
     }
 
@@ -118,8 +118,8 @@ public:
             indexToEntityId.emplace(index, entityId);
             entityIdToIndex.emplace(entityId, index);
 
-            if (index >= size) {
-                Resize(size * 2);
+            if (index >= data.capacity()) {
+                data.resize(size * 2);
             }
 
             data[index] = object;
@@ -138,7 +138,7 @@ public:
 
         // 更新组件状态表
         entityIdToIndex[lastEntityId] = willDelectIndex;
-        indexToEntityId[willDelectIndex] = lastIndex;
+        indexToEntityId[willDelectIndex] = lastEntityId;
 
         indexToEntityId.erase(lastIndex);
         entityIdToIndex.erase(entityId);
@@ -326,11 +326,6 @@ TComponent& Registry::GetComponent(Entity entity) const {
     }
 
     auto componentPool = std::static_pointer_cast<Pool<TComponent>>(componentPools[componentId]);
-    
-    // 检查 entityId 是否在 Pool 的有效范围内
-    if (entityId >= componentPool->GetSize()) {
-        throw std::runtime_error("Entity ID " + std::to_string(entityId) + " is out of range for component pool (size: " + std::to_string(componentPool->GetSize()) + ")");
-    }
 
     return componentPool->Get(entityId);
 }
