@@ -6,10 +6,12 @@
 #include "../System/MovementSystem.h"
 #include "../System/CollisionSystem.h"
 #include "../System/AnimationSystem.h"
+#include "../System/RenderTextSystem.h"
 #include "../System/RenderColliderSystem.h"
 #include "../System/CameraMovementSystem.h"
 #include "../System/ProjectileEmitSystem.h"
 #include "../System/KeyboardControlSystem.h"
+#include "../System/RenderHealthBarSystem.h"
 #include "../System/ProjectileLifecycleSystem.h"
 
 #include "../Event/KeyPressedEvent.h"
@@ -44,7 +46,12 @@ void Game::Initialize() {
     cameraRect.h = static_cast<float>(windowHeight);
     
     if (!SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO)) {
-        std::cout << "Error initializing SDL: " << SDL_GetError() << std::endl;
+        Logger::Error("Error initializing SDL: " + std::string(SDL_GetError()));
+        return;
+    }
+
+    if (!TTF_Init()) {
+        Logger::Error("Error initializing TTF: " + std::string(SDL_GetError()));
         return;
     }
 
@@ -79,16 +86,21 @@ void Game::LoadLevel(int level) {
     registry->AddSystem<MovementSystem>();
     registry->AddSystem<AnimationSystem>();
     registry->AddSystem<CollisionSystem>();
+    registry->AddSystem<RenderTextSystem>();
     registry->AddSystem<CameraMovementSystem>();
     registry->AddSystem<RenderColliderSystem>();
     registry->AddSystem<ProjectileEmitSystem>();
     registry->AddSystem<KeyboardControlSystem>();
+    registry->AddSystem<RenderHealthBarSystem>();
     registry->AddSystem<ProjectileLifecycleSystem>();
 
     assetStore->AddTexture(renderer, "image-tank", "../assets/images/tank-panther-right.png");
     assetStore->AddTexture(renderer, "image-chopper", "../assets/images/chopper-spritesheet.png");
     assetStore->AddTexture(renderer, "image-jungle", "../assets/tilemaps/jungle.png");
     assetStore->AddTexture(renderer, "image-bullet", "../assets/images/bullet.png");
+
+    assetStore->AddFont("font-arial-10", "../assets/fonts/pico8.ttf", 10);
+    assetStore->AddFont("font-arial-5", "../assets/fonts/pico8.ttf", 5);
 
     int tilemapRow = 20;
     int tilemapCol = 25;
@@ -127,7 +139,7 @@ void Game::LoadLevel(int level) {
     tank.AddComponent<SpriteComponent>(32.0, 32.0, "image-tank", 1);
     tank.AddComponent<BoxColliderComponent>(32.0, 32.0);
     tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(100.0, 0.0), Game::ns * 2, Game::ns * 5, 10, false);
-    tank.AddComponent<HealthComponent>(50);
+    tank.AddComponent<HealthComponent>(100);
 
     Entity tank2 = registry->CreateEntity();
     tank2.Group("Enemy");
@@ -136,7 +148,7 @@ void Game::LoadLevel(int level) {
     tank2.AddComponent<SpriteComponent>(32.0, 32.0, "image-tank", 1);
     tank2.AddComponent<BoxColliderComponent>(32.0, 32.0);
     tank2.AddComponent<ProjectileEmitterComponent>(glm::vec2(0.0, 100.0), Game::ns * 2, Game::ns * 5, 10, false);
-    tank2.AddComponent<HealthComponent>(50);
+    tank2.AddComponent<HealthComponent>(100);
 
     Entity chopper = registry->CreateEntity();
     chopper.Tag("Player");
@@ -149,6 +161,10 @@ void Game::LoadLevel(int level) {
     chopper.AddComponent<CameraFollowComponent>();
     chopper.AddComponent<ProjectileEmitterComponent>(glm::vec2(150.0, 150.0), 0, Game::ns * 5, 10, true);
     chopper.AddComponent<HealthComponent>(100);
+
+    SDL_Color white = {255, 255, 255, 255};
+    Entity testText = registry->CreateEntity();
+    testText.AddComponent<LabelTextComponent>(glm::vec2(0), "Test Font", "font-arial-10", white);
 
 }
 
@@ -209,6 +225,8 @@ void Game::Render() {
     SDL_RenderClear(renderer);
 
     registry->GetSystem<RenderSystem>().Update(renderer, assetStore, cameraRect);
+    registry->GetSystem<RenderHealthBarSystem>().Update(renderer, assetStore, cameraRect);
+    registry->GetSystem<RenderTextSystem>().Update(renderer, assetStore);
     if (isDebug) {
         registry->GetSystem<RenderColliderSystem>().Update(renderer, cameraRect);
     }

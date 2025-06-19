@@ -21,8 +21,8 @@ public:
             const auto& boxColliderComponent = entity.GetComponent<BoxColliderComponent>();
             
             SDL_FRect boxRect = {
-                transformComponent.position.x + boxColliderComponent.offset.x,
-                transformComponent.position.y + boxColliderComponent.offset.y,
+                transformComponent.position.x + boxColliderComponent.offset.x - (boxColliderComponent.isFixed ? 0 : cameraRect.x),
+                transformComponent.position.y + boxColliderComponent.offset.y - (boxColliderComponent.isFixed ? 0 : cameraRect.y),
                 boxColliderComponent.width,
                 boxColliderComponent.height
             };
