@@ -6,6 +6,7 @@
 #include "../System/MovementSystem.h"
 #include "../System/CollisionSystem.h"
 #include "../System/AnimationSystem.h"
+#include "../System/RenderTextSystem.h"
 #include "../System/RenderColliderSystem.h"
 #include "../System/CameraMovementSystem.h"
 #include "../System/ProjectileEmitSystem.h"
@@ -44,7 +45,12 @@ void Game::Initialize() {
     cameraRect.h = static_cast<float>(windowHeight);
     
     if (!SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO)) {
-        std::cout << "Error initializing SDL: " << SDL_GetError() << std::endl;
+        Logger::Error("Error initializing SDL: " + std::string(SDL_GetError()));
+        return;
+    }
+
+    if (!TTF_Init()) {
+        Logger::Error("Error initializing TTF: " + std::string(SDL_GetError()));
         return;
     }
 
@@ -79,6 +85,7 @@ void Game::LoadLevel(int level) {
     registry->AddSystem<MovementSystem>();
     registry->AddSystem<AnimationSystem>();
     registry->AddSystem<CollisionSystem>();
+    registry->AddSystem<RenderTextSystem>();
     registry->AddSystem<CameraMovementSystem>();
     registry->AddSystem<RenderColliderSystem>();
     registry->AddSystem<ProjectileEmitSystem>();
@@ -89,6 +96,8 @@ void Game::LoadLevel(int level) {
     assetStore->AddTexture(renderer, "image-chopper", "../assets/images/chopper-spritesheet.png");
     assetStore->AddTexture(renderer, "image-jungle", "../assets/tilemaps/jungle.png");
     assetStore->AddTexture(renderer, "image-bullet", "../assets/images/bullet.png");
+
+    assetStore->AddFont("font-arial-10", "../assets/fonts/pico8.ttf", 10);
 
     int tilemapRow = 20;
     int tilemapCol = 25;
@@ -150,6 +159,10 @@ void Game::LoadLevel(int level) {
     chopper.AddComponent<ProjectileEmitterComponent>(glm::vec2(150.0, 150.0), 0, Game::ns * 5, 10, true);
     chopper.AddComponent<HealthComponent>(100);
 
+    SDL_Color white = {255, 255, 255, 255};
+    Entity testText = registry->CreateEntity();
+    testText.AddComponent<LabelTextComponent>(glm::vec2(0), "Test Font", "font-arial-10", white);
+
 }
 
 void Game::Setup() {
@@ -209,6 +222,7 @@ void Game::Render() {
     SDL_RenderClear(renderer);
 
     registry->GetSystem<RenderSystem>().Update(renderer, assetStore, cameraRect);
+    registry->GetSystem<RenderTextSystem>().Update(renderer, assetStore);
     if (isDebug) {
         registry->GetSystem<RenderColliderSystem>().Update(renderer, cameraRect);
     }
