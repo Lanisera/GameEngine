@@ -11,6 +11,7 @@
 #include "../System/CameraMovementSystem.h"
 #include "../System/ProjectileEmitSystem.h"
 #include "../System/KeyboardControlSystem.h"
+#include "../System/RenderHealthBarSystem.h"
 #include "../System/ProjectileLifecycleSystem.h"
 
 #include "../Event/KeyPressedEvent.h"
@@ -90,6 +91,7 @@ void Game::LoadLevel(int level) {
     registry->AddSystem<RenderColliderSystem>();
     registry->AddSystem<ProjectileEmitSystem>();
     registry->AddSystem<KeyboardControlSystem>();
+    registry->AddSystem<RenderHealthBarSystem>();
     registry->AddSystem<ProjectileLifecycleSystem>();
 
     assetStore->AddTexture(renderer, "image-tank", "../assets/images/tank-panther-right.png");
@@ -98,6 +100,7 @@ void Game::LoadLevel(int level) {
     assetStore->AddTexture(renderer, "image-bullet", "../assets/images/bullet.png");
 
     assetStore->AddFont("font-arial-10", "../assets/fonts/pico8.ttf", 10);
+    assetStore->AddFont("font-arial-5", "../assets/fonts/pico8.ttf", 5);
 
     int tilemapRow = 20;
     int tilemapCol = 25;
@@ -136,7 +139,7 @@ void Game::LoadLevel(int level) {
     tank.AddComponent<SpriteComponent>(32.0, 32.0, "image-tank", 1);
     tank.AddComponent<BoxColliderComponent>(32.0, 32.0);
     tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(100.0, 0.0), Game::ns * 2, Game::ns * 5, 10, false);
-    tank.AddComponent<HealthComponent>(50);
+    tank.AddComponent<HealthComponent>(100);
 
     Entity tank2 = registry->CreateEntity();
     tank2.Group("Enemy");
@@ -145,7 +148,7 @@ void Game::LoadLevel(int level) {
     tank2.AddComponent<SpriteComponent>(32.0, 32.0, "image-tank", 1);
     tank2.AddComponent<BoxColliderComponent>(32.0, 32.0);
     tank2.AddComponent<ProjectileEmitterComponent>(glm::vec2(0.0, 100.0), Game::ns * 2, Game::ns * 5, 10, false);
-    tank2.AddComponent<HealthComponent>(50);
+    tank2.AddComponent<HealthComponent>(100);
 
     Entity chopper = registry->CreateEntity();
     chopper.Tag("Player");
@@ -222,6 +225,7 @@ void Game::Render() {
     SDL_RenderClear(renderer);
 
     registry->GetSystem<RenderSystem>().Update(renderer, assetStore, cameraRect);
+    registry->GetSystem<RenderHealthBarSystem>().Update(renderer, assetStore, cameraRect);
     registry->GetSystem<RenderTextSystem>().Update(renderer, assetStore);
     if (isDebug) {
         registry->GetSystem<RenderColliderSystem>().Update(renderer, cameraRect);
