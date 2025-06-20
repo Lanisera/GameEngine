@@ -24,8 +24,9 @@ target_link_libraries(sdl_test PRIVATE
     SDL3_image::SDL3_image
     SDL3_mixer::SDL3_mixer
     SDL3_ttf::SDL3_ttf
+    imgui
 )
 
 include_directories(
-    ${CMAKE_SOURCE_DIR}/libs
+    ${CMAKE_SOURCE_DIR}/libs/glm
 )
