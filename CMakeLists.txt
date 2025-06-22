@@ -11,6 +11,7 @@ find_package(SDL3_mixer REQUIRED)
 find_package(SDL3_ttf REQUIRED)
 
 # 添加可执行文件
+add_subdirectory(libs/imgui)
 add_executable(sdl_test 
                 src/main.cpp
                 src/Game/Game.cpp
@@ -28,5 +29,5 @@ target_link_libraries(sdl_test PRIVATE
 )
 
 include_directories(
-    ${CMAKE_SOURCE_DIR}/libs/glm
+    ${CMAKE_SOURCE_DIR}/libs/
 )

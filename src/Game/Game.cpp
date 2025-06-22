@@ -23,6 +23,10 @@
 #include <iostream>
 #include <SDL3/SDL.h>
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_sdl3.h"
+#include "imgui/imgui_impl_sdlrenderer3.h"
+
 int Game::windowWidth = 0;
 int Game::windowHeight = 0;
 int Game::mapWidth = 0;
@@ -65,6 +69,19 @@ void Game::Initialize() {
     if (renderer == NULL) {
         std::cout << "Error creating renderer: " << SDL_GetError() << std::endl;
     }
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplSDL3_InitForSDLRenderer(window, renderer);
+    ImGui_ImplSDLRenderer3_Init(renderer);
 
     registry = std::make_unique<Registry>();
     eventBus = std::make_unique<EventBus>();
@@ -175,6 +192,7 @@ void Game::Setup() {
 void Game::ProcessInput() {
     SDL_Event sdlEvent;
     while (SDL_PollEvent(&sdlEvent)) {
+        ImGui_ImplSDL3_ProcessEvent(&sdlEvent);
         switch (sdlEvent.type){
             case SDL_EVENT_QUIT:
                 isRunning = false;
@@ -229,11 +247,27 @@ void Game::Render() {
     registry->GetSystem<RenderTextSystem>().Update(renderer, assetStore);
     if (isDebug) {
         registry->GetSystem<RenderColliderSystem>().Update(renderer, cameraRect);
+
+        // Start the Dear ImGui frame
+        ImGui_ImplSDLRenderer3_NewFrame();
+        ImGui_ImplSDL3_NewFrame();
+        ImGui::NewFrame();
+
+        ImGui::ShowDemoWindow();
+
+        ImGui::Render();
+        ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), renderer);
     }
 
     SDL_RenderPresent(renderer);
 }
 
 void Game::Destory() {
+    ImGui_ImplSDLRenderer3_Shutdown();
+    ImGui_ImplSDL3_Shutdown();
+    ImGui::DestroyContext();
 
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 }
