@@ -6,6 +6,7 @@
 #include "../System/MovementSystem.h"
 #include "../System/CollisionSystem.h"
 #include "../System/AnimationSystem.h"
+#include "../System/RenderGUISystem.h"
 #include "../System/RenderTextSystem.h"
 #include "../System/RenderColliderSystem.h"
 #include "../System/CameraMovementSystem.h"
@@ -23,9 +24,9 @@
 #include <iostream>
 #include <SDL3/SDL.h>
 
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_sdl3.h"
-#include "imgui/imgui_impl_sdlrenderer3.h"
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_sdl3.h>
+#include <imgui/imgui_impl_sdlrenderer3.h>
 
 int Game::windowWidth = 0;
 int Game::windowHeight = 0;
@@ -103,6 +104,7 @@ void Game::LoadLevel(int level) {
     registry->AddSystem<MovementSystem>();
     registry->AddSystem<AnimationSystem>();
     registry->AddSystem<CollisionSystem>();
+    registry->AddSystem<RenderGUISystem>();
     registry->AddSystem<RenderTextSystem>();
     registry->AddSystem<CameraMovementSystem>();
     registry->AddSystem<RenderColliderSystem>();
@@ -169,7 +171,7 @@ void Game::LoadLevel(int level) {
 
     Entity chopper = registry->CreateEntity();
     chopper.Tag("Player");
-    chopper.AddComponent<TransformComponent>(glm::vec2(100, 100), glm::vec2(1.0, 1.0));
+    chopper.AddComponent<TransformComponent>(glm::vec2(150, 100), glm::vec2(1.0, 1.0));
     chopper.AddComponent<SpriteComponent>(32.0, 32.0, "image-chopper", 1);
     chopper.AddComponent<BoxColliderComponent>(32.0, 32.0);
     chopper.AddComponent<AnimationComponent>(2, 5);
@@ -247,16 +249,7 @@ void Game::Render() {
     registry->GetSystem<RenderTextSystem>().Update(renderer, assetStore);
     if (isDebug) {
         registry->GetSystem<RenderColliderSystem>().Update(renderer, cameraRect);
-
-        // Start the Dear ImGui frame
-        ImGui_ImplSDLRenderer3_NewFrame();
-        ImGui_ImplSDL3_NewFrame();
-        ImGui::NewFrame();
-
-        ImGui::ShowDemoWindow();
-
-        ImGui::Render();
-        ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), renderer);
+        registry->GetSystem<RenderGUISystem>().Update(renderer, registry);
     }
 
     SDL_RenderPresent(renderer);
