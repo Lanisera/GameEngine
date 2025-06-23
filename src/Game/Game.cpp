@@ -249,7 +249,7 @@ void Game::Render() {
     registry->GetSystem<RenderTextSystem>().Update(renderer, assetStore);
     if (isDebug) {
         registry->GetSystem<RenderColliderSystem>().Update(renderer, cameraRect);
-        registry->GetSystem<RenderGUISystem>().Update(renderer, registry);
+        registry->GetSystem<RenderGUISystem>().Update(renderer, registry, cameraRect);
     }
 
     SDL_RenderPresent(renderer);
