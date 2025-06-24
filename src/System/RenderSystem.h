@@ -24,7 +24,23 @@ public:
 
         std::vector<renderableEnity> renderableEnities;
         for (const auto& entity : GetSystemEntities()) {
-            renderableEnities.push_back({entity.GetComponent<SpriteComponent>(), entity.GetComponent<TransformComponent>()});
+            renderableEnity renderableEntity;
+            renderableEntity.spriteComponent = entity.GetComponent<SpriteComponent>();
+            renderableEntity.transformComponent = entity.GetComponent<TransformComponent>();
+
+            // Check if the entity sprite is outside the camera view
+            bool isOutsideCameraView = (
+                renderableEntity.transformComponent.position.x + (renderableEntity.transformComponent.scale.x * renderableEntity.spriteComponent.width) < camera.x ||
+                renderableEntity.transformComponent.position.x > camera.x + camera.w ||
+                renderableEntity.transformComponent.position.y + (renderableEntity.transformComponent.scale.y * renderableEntity.spriteComponent.height) < camera.y ||
+                renderableEntity.transformComponent.position.y > camera.y + camera.h
+            );
+
+            if (isOutsideCameraView) {
+                continue;
+            }
+
+            renderableEnities.emplace_back(renderableEntity);
         }
 
         std::sort(renderableEnities.begin(), renderableEnities.end(), [](const renderableEnity& a, const renderableEnity& b) {
@@ -34,15 +50,6 @@ public:
         for (auto entity :renderableEnities) {
             const auto& spriteComponent = entity.spriteComponent;
             const auto& transformComponent = entity.transformComponent;
-
-            bool isOutsideCameraView = (
-                    entity.transformComponent.position.x + (entity.transformComponent.scale.x * entity.spriteComponent.width) < camera.x ||
-                    entity.transformComponent.position.x > camera.x + camera.w ||
-                    entity.transformComponent.position.y + (entity.transformComponent.scale.y * entity.spriteComponent.height) < camera.y ||
-                    entity.transformComponent.position.y > camera.y + camera.h
-                );
-            
-            if (isOutsideCameraView) continue;
 
             SDL_FRect dstRect = {
                 transformComponent.position.x - camera.x,
