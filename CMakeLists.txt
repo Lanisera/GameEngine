@@ -26,7 +26,7 @@ target_link_libraries(sdl_test PRIVATE
     SDL3_mixer::SDL3_mixer
     SDL3_ttf::SDL3_ttf
     imgui
-    libs/lua/liblua54.a
+    ${CMAKE_SOURCE_DIR}/libs/lua/lua54.dll
 )
 
 include_directories(
