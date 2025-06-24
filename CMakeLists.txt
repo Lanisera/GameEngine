@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(sdl_test)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # 查找所需的包
@@ -26,8 +26,10 @@ target_link_libraries(sdl_test PRIVATE
     SDL3_mixer::SDL3_mixer
     SDL3_ttf::SDL3_ttf
     imgui
+    libs/lua/liblua54.a
 )
 
 include_directories(
     ${CMAKE_SOURCE_DIR}/libs/
+    ${CMAKE_SOURCE_DIR}/libs/lua
 )
