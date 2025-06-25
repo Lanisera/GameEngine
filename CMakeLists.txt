@@ -29,6 +29,13 @@ target_link_libraries(sdl_test PRIVATE
     ${CMAKE_SOURCE_DIR}/libs/lua/lua54.dll
 )
 
+# 复制dll动态链接库
+add_custom_command(TARGET sdl_test POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different
+  "${CMAKE_SOURCE_DIR}/libs/lua/lua54.dll"
+  "$<TARGET_FILE_DIR:sdl_test>"
+)
+
 include_directories(
     ${CMAKE_SOURCE_DIR}/libs/
     ${CMAKE_SOURCE_DIR}/libs/lua
