@@ -17,7 +17,7 @@ void AssetStore::AddTexture(SDL_Renderer* renderer, const std::string& assetId, 
     SDL_Texture* texture = IMG_LoadTexture(renderer, filePath.c_str());
 
     if (texture == NULL) {
-        Logger::Error("Dont load image");
+        Logger::Error("Dont load image " + assetId);
     }
 
     imageAssets.emplace(assetId, texture);

@@ -49,6 +49,8 @@ void Game::Initialize() {
     windowWidth = 1080;
     windowHeight = 720;
 
+    cameraRect.x = 0;
+    cameraRect.y = 0;
     cameraRect.w = static_cast<float>(windowWidth);
     cameraRect.h = static_cast<float>(windowHeight);
     

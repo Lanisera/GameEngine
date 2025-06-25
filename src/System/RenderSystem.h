@@ -23,7 +23,7 @@ public:
         };
 
         std::vector<renderableEnity> renderableEnities;
-        for (const auto& entity : GetSystemEntities()) {
+        for (auto entity : GetSystemEntities()) {
             renderableEnity renderableEntity;
             renderableEntity.spriteComponent = entity.GetComponent<SpriteComponent>();
             renderableEntity.transformComponent = entity.GetComponent<TransformComponent>();
@@ -67,7 +67,6 @@ public:
                 NULL,
                 SDL_FLIP_NONE
             );
-
         }
     }
 };
