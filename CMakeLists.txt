@@ -15,6 +15,7 @@ add_subdirectory(libs/imgui)
 add_executable(sdl_test 
                 src/main.cpp
                 src/Game/Game.cpp
+                src/Game/LevelLoader.cpp
                 src/ECS/ECS.cpp
                 src/AssetStore/AssetStore.cpp
                 )

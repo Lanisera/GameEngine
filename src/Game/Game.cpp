@@ -1,4 +1,6 @@
 #include "Game.h"
+#include "LevelLoader.h"
+
 #include "../ECS/ECS.h"
 
 #include "../System/DamageSystem.h"
@@ -84,6 +86,8 @@ void Game::Initialize() {
     ImGui_ImplSDL3_InitForSDLRenderer(window, renderer);
     ImGui_ImplSDLRenderer3_Init(renderer);
 
+    luaState.open_libraries(sol::lib::base, sol::lib::math, sol::lib::os);
+
     registry = std::make_unique<Registry>();
     eventBus = std::make_unique<EventBus>();
     assetStore = std::make_unique<AssetStore>();
@@ -99,20 +103,6 @@ void Game::Run() {
 }
 
 void Game::LoadLevel(int level) {
-    registry->AddSystem<RenderSystem>();
-    registry->AddSystem<DamageSystem>();
-    registry->AddSystem<MovementSystem>();
-    registry->AddSystem<AnimationSystem>();
-    registry->AddSystem<CollisionSystem>();
-    registry->AddSystem<RenderGUISystem>();
-    registry->AddSystem<RenderTextSystem>();
-    registry->AddSystem<CameraMovementSystem>();
-    registry->AddSystem<RenderColliderSystem>();
-    registry->AddSystem<ProjectileEmitSystem>();
-    registry->AddSystem<KeyboardControlSystem>();
-    registry->AddSystem<RenderHealthBarSystem>();
-    registry->AddSystem<ProjectileLifecycleSystem>();
-
     assetStore->AddTexture(renderer, "image-tank", "../assets/images/tank-panther-right.png");
     assetStore->AddTexture(renderer, "image-tree", "../assets/images/tree.png");
     assetStore->AddTexture(renderer, "image-chopper", "../assets/images/chopper-spritesheet.png");
@@ -201,7 +191,22 @@ void Game::LoadLevel(int level) {
 }
 
 void Game::Setup() {
-    LoadLevel(0);
+    registry->AddSystem<RenderSystem>();
+    registry->AddSystem<DamageSystem>();
+    registry->AddSystem<MovementSystem>();
+    registry->AddSystem<AnimationSystem>();
+    registry->AddSystem<CollisionSystem>();
+    registry->AddSystem<RenderGUISystem>();
+    registry->AddSystem<RenderTextSystem>();
+    registry->AddSystem<CameraMovementSystem>();
+    registry->AddSystem<RenderColliderSystem>();
+    registry->AddSystem<ProjectileEmitSystem>();
+    registry->AddSystem<KeyboardControlSystem>();
+    registry->AddSystem<RenderHealthBarSystem>();
+    registry->AddSystem<ProjectileLifecycleSystem>();
+    
+    LevelLoader levelLoader;
+    levelLoader.LoadLevel(luaState, registry, assetStore, renderer, 0);
 }
 
 void Game::ProcessInput() {

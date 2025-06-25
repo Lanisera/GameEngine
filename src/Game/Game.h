@@ -2,6 +2,8 @@
 #include <SDL3/SDL.h>
 #include <memory>
 
+#include <sol/sol.hpp>
+
 #include "../ECS/ECS.h"
 #include "../EventBus/EventBus.h"
 #include "../AssetStore/AssetStore.h"
@@ -35,6 +37,8 @@ private:
     SDL_Window *window;
     SDL_FRect cameraRect;
     SDL_Renderer *renderer;
+    
+    sol::state luaState;
     std::unique_ptr<Registry> registry;
     std::unique_ptr<EventBus> eventBus;
     std::unique_ptr<AssetStore> assetStore;

@@ -7,15 +7,15 @@
 void TestLua();
 
 int main(int argc, char* argv[]) {
-    TestLua();
+    // TestLua();
     
-    // Game m_Game;
+    Game m_Game;
 
-    // m_Game.Initialize();
+    m_Game.Initialize();
 
-    // m_Game.Run();
+    m_Game.Run();
 
-    // m_Game.Destory();
+    m_Game.Destory();
 
     return 0;
 }
