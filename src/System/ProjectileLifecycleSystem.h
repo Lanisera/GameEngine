@@ -12,6 +12,7 @@ public:
     }
 
     void Update(std::unique_ptr<Registry>& registry) {
+        Logger::Debug("Start LifeTime Update");
         for (auto entity : GetSystemEntities()) {
             const auto& projectileComponent = entity.GetComponent<ProjectileComponent>();
 
@@ -19,5 +20,6 @@ public:
                 registry->KillEntity(entity);
             }
         }
+        Logger::Debug("Finish LifeTime Update");
     }
 };

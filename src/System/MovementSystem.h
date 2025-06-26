@@ -52,7 +52,7 @@ public:
             transformComponent.position.y += rigidbodyComponent.velocity.y * deltaTime;
 
             // Prevent the main player from moving outside the map boundaries
-            if (entity.HasTag("Player")) {
+            if (entity.HasTag("player")) {
                 int paddingLeft = 10;
                 int paddingTop = 10;
                 int paddingRight = 50;
@@ -70,7 +70,7 @@ public:
                 transformComponent.position.y + (transformComponent.scale.y * sprite.height) > Game::mapHeight
             );
 
-            if (isOutsideMap && !entity.HasTag("Player")) {
+            if (isOutsideMap && !entity.HasTag("player")) {
                 entity.Kill();
             }
 

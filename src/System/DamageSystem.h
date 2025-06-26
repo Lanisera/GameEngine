@@ -27,7 +27,7 @@ public:
     void OnCollision(CollisionEvent& event) {
         Entity a = event.a;
         Entity b = event.b;
-
+        
         if (a.BelongToGroup("bullet") && b.HasTag("player")) {
             OnProjectileHitPlayer(a, b);
         }
