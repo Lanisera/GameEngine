@@ -28,16 +28,16 @@ public:
         Entity a = event.a;
         Entity b = event.b;
 
-        if (a.BelongToGroup("Bullet") && b.HasTag("Player")) {
+        if (a.BelongToGroup("bullet") && b.HasTag("player")) {
             OnProjectileHitPlayer(a, b);
         }
-        if (b.BelongToGroup("Bullet") && a.HasTag("Player")) {
+        if (b.BelongToGroup("bullet") && a.HasTag("player")) {
             OnProjectileHitPlayer(b, a);
         }
-        if (a.BelongToGroup("Bullet") && b.BelongToGroup("Enemy")) {
+        if (a.BelongToGroup("bullet") && b.BelongToGroup("enemy")) {
             OnProjectileHitEnemy(a, b);
         }
-        if (b.BelongToGroup("Bullet") && a.BelongToGroup("Enemy")) {
+        if (b.BelongToGroup("bullet") && a.BelongToGroup("enemy")) {
             OnProjectileHitEnemy(b, a);
         }
     }

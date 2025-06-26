@@ -22,11 +22,11 @@ public:
         Entity a = event.a;
         Entity b = event.b;
 
-        if (a.BelongToGroup("Enemy") && b.BelongToGroup("Obstacle")) {
+        if (a.BelongToGroup("enemy") && b.BelongToGroup("obstacle")) {
             OnEnemyHitObstacle(a, b);
         }
 
-        if (b.BelongToGroup("Enemy") && a.BelongToGroup("Obstacle")) {
+        if (b.BelongToGroup("enemy") && a.BelongToGroup("obstacle")) {
             OnEnemyHitObstacle(b, a);
         }
     }

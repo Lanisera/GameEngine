@@ -55,7 +55,7 @@ public:
                     }
 
                     Entity newEntity = entity.registry->CreateEntity();
-                    newEntity.Group("Bullet");
+                    newEntity.Group("bullet");
                     newEntity.AddComponent<SpriteComponent>(4.0, 4.0, "bullet-texture", 4);
                     newEntity.AddComponent<TransformComponent>(projectilePosition);
                     newEntity.AddComponent<RigidbodyComponent>(projectileVelocity);
@@ -85,7 +85,7 @@ public:
                 }
                 
                 Entity newEntity = registry->CreateEntity();
-                newEntity.Group("Bullet");
+                newEntity.Group("bullet");
                 newEntity.AddComponent<SpriteComponent>(4, 4, "bullet-texture", 4);
                 newEntity.AddComponent<TransformComponent>(projectilePosition);
                 newEntity.AddComponent<RigidbodyComponent>(projectileEmitterComponent.projectileVelocity);
