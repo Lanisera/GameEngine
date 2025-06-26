@@ -1,3 +1,12 @@
+local now_hour = os.date("*t").hour
+
+local map_texture_asset_id
+if now_hour >=9 and now_hour < 18 then
+    map_texture_asset_id = "tilemap-texture-day"
+else
+    map_texture_asset_id = "tilemap-texture-night"
+end
+
 Level = {
     ----------------------------------------------------
     -- Table to define the list of assets
@@ -83,7 +92,7 @@ Level = {
     ----------------------------------------------------
     tilemap = {
         map_file = "../assets/tilemaps/jungle.map",
-        texture_asset_id = "tilemap-texture-day",
+        texture_asset_id = map_texture_asset_id,
         num_rows = 20,
         num_cols = 25,
         tile_size = 32,
