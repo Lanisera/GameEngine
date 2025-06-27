@@ -163,7 +163,12 @@ void Registry::Update() {
         entityComponentSignatures[entityId].reset();
         freeIds.push_back(entityId);
 
+        // Logger::Error("Find Error");
+
         for (auto& pool : componentPools) {
+            if (!pool) {
+                continue;
+            }
             pool->RemoveEntityFromPool(entityId);
         }
     }

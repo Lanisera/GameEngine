@@ -14,7 +14,7 @@ public:
     }
 
     void Update() {
-        Logger::Debug("AnimationSystem");
+        // Logger::Debug("AnimationSystem");
         for (auto& entity : GetSystemEntities()) {
             auto& spriteComponent = entity.GetComponent<SpriteComponent>();
             auto& animationComponent = entity.GetComponent<AnimationComponent>();

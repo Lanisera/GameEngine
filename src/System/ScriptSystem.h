@@ -12,7 +12,7 @@ public:
     }
 
     void Update(double deltaTime) {
-        Logger::Debug("ScriptSystem");
+        // Logger::Debug("ScriptSystem");
         for (auto entity : GetSystemEntities()) {
             const auto& script = entity.GetComponent<ScriptComponent>();
             script.func();

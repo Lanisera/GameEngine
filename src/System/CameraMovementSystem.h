@@ -18,7 +18,7 @@ public:
     }
 
     void Update(SDL_FRect& cameraRect) {
-        Logger::Debug("CameraMovementSystem");
+        // Logger::Debug("CameraMovementSystem");
         for (auto entity : GetSystemEntities()) {
             const auto& transformComponent = entity.GetComponent<TransformComponent>();
             

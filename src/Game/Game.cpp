@@ -252,7 +252,6 @@ void Game::Update() {
     registry->GetSystem<KeyboardControlSystem>().SubscribeEvents(eventBus);
     registry->GetSystem<ProjectileEmitSystem>().SubscribeEvents(eventBus);
 
-    Logger::Debug("Update");
     registry->Update();
 
     registry->GetSystem<MovementSystem>().Update(deltaTime);
@@ -262,7 +261,6 @@ void Game::Update() {
     registry->GetSystem<ProjectileEmitSystem>().Update(registry);
     registry->GetSystem<ProjectileLifecycleSystem>().Update(registry);
     registry->GetSystem<ScriptSystem>().Update(deltaTime);
-    Logger::Debug("Finished");
 }
 
 

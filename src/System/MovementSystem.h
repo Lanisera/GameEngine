@@ -43,7 +43,7 @@ public:
     }
 
     void Update(double deltaTime) {
-        Logger::Debug("MovementSystem");
+        // Logger::Debug("MovementSystem");
         for (auto entity : GetSystemEntities()) {
             auto& transformComponent = entity.GetComponent<TransformComponent>();
             const auto& rigidbodyComponent = entity.GetComponent<RigidbodyComponent>();
