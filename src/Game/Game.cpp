@@ -212,7 +212,7 @@ void Game::Setup() {
     registry->GetSystem<ScriptSystem>().CreateLuaBindings(luaState);
     
     LevelLoader levelLoader;
-    levelLoader.LoadLevel(luaState, registry, assetStore, renderer, 0);
+    levelLoader.LoadLevel(luaState, registry, assetStore, renderer, 2);
 }
 
 void Game::ProcessInput() {
