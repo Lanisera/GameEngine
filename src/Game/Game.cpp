@@ -208,6 +208,8 @@ void Game::Setup() {
     registry->AddSystem<KeyboardControlSystem>();
     registry->AddSystem<RenderHealthBarSystem>();
     registry->AddSystem<ProjectileLifecycleSystem>();
+
+    registry->GetSystem<ScriptSystem>().CreateLuaBindings(luaState);
     
     LevelLoader levelLoader;
     levelLoader.LoadLevel(luaState, registry, assetStore, renderer, 0);
@@ -260,7 +262,7 @@ void Game::Update() {
     registry->GetSystem<CameraMovementSystem>().Update(cameraRect);
     registry->GetSystem<ProjectileEmitSystem>().Update(registry);
     registry->GetSystem<ProjectileLifecycleSystem>().Update(registry);
-    registry->GetSystem<ScriptSystem>().Update(deltaTime);
+    registry->GetSystem<ScriptSystem>().Update(deltaTime, SDL_GetTicks());
 }
 
 
