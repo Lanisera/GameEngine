@@ -12,6 +12,7 @@ public:
     }
 
     void Update(std::unique_ptr<Registry>& registry) {
+        Logger::Debug("ProjectileLifecycleSystem");
         for (auto entity : GetSystemEntities()) {
             const auto& projectileComponent = entity.GetComponent<ProjectileComponent>();
 

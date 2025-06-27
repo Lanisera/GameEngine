@@ -68,6 +68,7 @@ public:
     }
 
     void Update(std::unique_ptr<Registry>& registry) {
+        Logger::Debug("ProjectileEmitSystem");
         for (auto entity : GetSystemEntities()) {
             const auto& transformComponent = entity.GetComponent<TransformComponent>();
             auto& projectileEmitterComponent = entity.GetComponent<ProjectileEmitterComponent>();

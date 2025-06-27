@@ -19,6 +19,7 @@ public:
     }
 
     void Update(std::unique_ptr<EventBus>& eventBus) {
+        Logger::Debug("CollisionSystem");
         const auto& entities = GetSystemEntities();
         for (auto i = entities.begin(); i != entities.end(); i++) {
             Entity a = *i;

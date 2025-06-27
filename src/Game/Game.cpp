@@ -5,6 +5,7 @@
 
 #include "../System/DamageSystem.h"
 #include "../System/RenderSystem.h"
+#include "../System/ScriptSystem.h"
 #include "../System/MovementSystem.h"
 #include "../System/CollisionSystem.h"
 #include "../System/AnimationSystem.h"
@@ -195,6 +196,7 @@ void Game::LoadLevel(int level) {
 void Game::Setup() {
     registry->AddSystem<RenderSystem>();
     registry->AddSystem<DamageSystem>();
+    registry->AddSystem<ScriptSystem>();
     registry->AddSystem<MovementSystem>();
     registry->AddSystem<AnimationSystem>();
     registry->AddSystem<CollisionSystem>();
@@ -250,6 +252,7 @@ void Game::Update() {
     registry->GetSystem<KeyboardControlSystem>().SubscribeEvents(eventBus);
     registry->GetSystem<ProjectileEmitSystem>().SubscribeEvents(eventBus);
 
+    Logger::Debug("Update");
     registry->Update();
 
     registry->GetSystem<MovementSystem>().Update(deltaTime);
@@ -258,6 +261,8 @@ void Game::Update() {
     registry->GetSystem<CameraMovementSystem>().Update(cameraRect);
     registry->GetSystem<ProjectileEmitSystem>().Update(registry);
     registry->GetSystem<ProjectileLifecycleSystem>().Update(registry);
+    registry->GetSystem<ScriptSystem>().Update(deltaTime);
+    Logger::Debug("Finished");
 }
 
 

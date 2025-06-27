@@ -139,7 +139,7 @@ Level = {
                 },
                 projectile_emitter = {
                     projectile_velocity = { x = 200, y = 200 },
-                    projectile_duration = 10, -- seconds
+                    projectile_duration = 2, -- seconds
                     repeat_frequency = 0, -- seconds
                     hit_percentage_damage = 10,
                     friendly = true
@@ -155,5 +155,55 @@ Level = {
                 }
             }
         }
+        -- {
+        --     -- F-22 fighter jet
+        --     group = "enemies",
+        --     components = {
+        --         transform = {
+        --             position = { x = 10, y = 10 },
+        --             scale = { x = 1.0, y = 1.0 },
+        --             rotation = 90.0, -- degrees
+        --         },
+        --         rigidbody = {
+        --             velocity = { x = 0.0, y = 0.0 }
+        --         },
+        --         sprite = {
+        --             texture_asset_id = "f22-texture",
+        --             width = 32,
+        --             height = 32,
+        --             z_index = 5
+        --         },
+        --         animation = {
+        --             num_frames = 2,
+        --             speed_rate = 10 -- fps
+        --         },
+        --         boxcollider = {
+        --             width = 32,
+        --             height = 32
+        --         },
+        --         health = {
+        --             health_percentage = 100
+        --         },
+        --         projectile_emitter = {
+        --             projectile_velocity = { x = 200, y = 0 },
+        --             projectile_duration = 1, -- secondsm
+        --             repeat_frequency = 1, -- seconds
+        --             hit_percentage_damage = 10,
+        --             friendly = false
+        --         },
+        --         on_update_script = {
+        --             [0] =
+        --             function(entity, delta_time, ellapsed_time)
+        --                 -- print("Script Update")
+        --                 --[[
+        --                 -- change the position of the the airplane to follow a sine wave movement
+        --                 local new_x = ellapsed_time * 0.09
+        --                 local new_y = 200 + (math.sin(ellapsed_time * 0.001) * 50)
+        --                 set_position(entity, new_x, new_y) -- set the new position
+        --                 --]]
+        --             end
+        --         }
+        --     }
+        -- }
     }
 }

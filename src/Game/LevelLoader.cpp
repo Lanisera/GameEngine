@@ -9,6 +9,7 @@
 
 #include "../Component/HealthComponent.h"
 #include "../Component/SpriteComponent.h"
+#include "../Component/ScriptComponent.h"
 #include "../Component/LabelTextComponent.h"
 #include "../Component/AnimationComponent.h"
 #include "../Component/TransformComponent.h"
@@ -267,6 +268,12 @@ void LevelLoader::LoadLevel(sol::state& lua, std::unique_ptr<Registry>& registry
                         entity["components"]["keyboard_controller"]["left_velocity"]["y"]
                     )
                 );
+            }
+
+            sol::optional<sol::table> script = entity["components"]["on_update_script"];
+            if (script != sol::nullopt) {
+                sol::function func = entity["components"]["on_update_script"][0];
+                newEntity.AddComponent<ScriptComponent>(func);
             }
         }
         i++;
